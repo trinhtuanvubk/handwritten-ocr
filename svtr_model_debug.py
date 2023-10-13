@@ -595,7 +595,7 @@ class Im2Seq(nn.Module):
 class CTCHead(nn.Module):
     def __init__(self,
                  in_channels=192,
-                 out_channels=6624,
+                 out_channels=125,
                  fc_decay=0.0004,
                  mid_channels=None,
                  return_feats=False,
@@ -651,6 +651,7 @@ class SVTRArch(nn.Module):
 
     def forward(self, x):
         x = self.backbone(x)
+        print(x.shape)
         x = self.neck(x)
         x = self.head(x)
         return x
@@ -664,3 +665,4 @@ if __name__ == '__main__':
     # svtr = svtr.to(device)
     x = svtr(img)
     print(x[0].shape)
+    print("Number of parameters: ", sum([p.numel() for p in svtr.parameters() if p.requires_grad]))
