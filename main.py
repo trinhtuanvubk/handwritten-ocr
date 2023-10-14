@@ -7,7 +7,7 @@ import os
 # os.environ['CUDA_VISIBLE_DEVICES'] = '1'
 
 def main():
-    args = util.get_args()
+    args = utils.get_args()
     method = getattr(scenario, args.scenario)
     method(args)
 
