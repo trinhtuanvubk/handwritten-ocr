@@ -1,6 +1,7 @@
 # 
 ckpt
 data/*
+**/trash*.py
 
 
 # Byte-compiled / optimized / DLL files
