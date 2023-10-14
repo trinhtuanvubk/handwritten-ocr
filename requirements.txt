@@ -1,2 +1,6 @@
 torch==2.0.1
 torchvision==0.15.2
+lmdb
+tqdm
+opencv-python<=4.6.0.66
+opencv-contrib-python<=4.6.0.66
