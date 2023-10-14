@@ -1,10 +1,17 @@
-# svtr-pytorch
-pytorch version of svtr model
+# Handwritten OCR
 
+### Environment
 
+- To create virtual environment:
+```
+vitualenv venv
+pip install -r requiments.txt
+```
 
-rec_svtrnet.py --- 原paddle版本
+### Data
 
-svtr_model.py --- pytorch复现版本， 亲测可用。
+### Train
 
-svtr论文链接：https://arxiv.org/abs/2205.00159
+### Eval
+
+### Note
