@@ -641,20 +641,18 @@ class CTCHead(nn.Module):
             result = (predicts, None)
         return result
 
-from nnet.modules.encoder import SequenceEncoder
+
 class SVTRArch(nn.Module):
     def __init__(self):
         super(SVTRArch, self).__init__()
         self.backbone = SVTRNet()
-        # self.neck = Im2Seq()
-        self.neck = SequenceEncoder(in_channels=192, encoder_type='svtr')
+        self.neck = Im2Seq()
         self.head = CTCHead()
 
     def forward(self, x):
         x = self.backbone(x)
         print(x.shape)
         x = self.neck(x)
-        print(x.shape)
         x = self.head(x)
         return x
 

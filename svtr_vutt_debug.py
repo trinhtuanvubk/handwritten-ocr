@@ -412,7 +412,7 @@ class SVTRNet(nn.Module):
             sub_norm='nn.LayerNorm',
             epsilon=1e-6,
             out_channels=192,
-            out_char_num=25,
+            out_char_num=40,
             block_unit='Block',
             act='nn.GELU',
             last_stage=True,
@@ -594,9 +594,30 @@ class SVTRNet(nn.Module):
             return x, len_x
         return x
 
+from nnet.modules.encoder import SequenceEncoder
+from nnet.modules.rec_head import CTCHead
+class SVTRArch(nn.Module):
+    def __init__(self):
+        super(SVTRArch, self).__init__()
+        self.backbone = SVTRNet()
+        self.neck = SequenceEncoder(in_channels=192, encoder_type='svtr')
+        self.head = CTCHead(in_channels=192)
+    
+    def forward(self, x):
+        x = self.backbone(x)
+        print(x.shape)
+        x = self.neck(x)
+        print(x.shape)
+        x = self.head(x)
+        return x
+
+
+
+
 if __name__=="__main__":
     img = torch.rand([1, 3, 32, 480])
-    model = SVTRNet()
+    # model = SVTRNet()
+    model = SVTRArch()
     print(model)
     output = model(img)
-    print(output.shape)
+    print(output[0].shape)

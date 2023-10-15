@@ -657,7 +657,7 @@ class SVTRArch(nn.Module):
 
 
 if __name__ == '__main__':
-    img = torch.rand([4, 3, 32, 640])
+    img = torch.rand([4, 3, 32, 480])
     svtr = SVTRArch()
     x = svtr(img)
     print(x.shape)
