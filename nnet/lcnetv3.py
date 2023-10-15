@@ -508,13 +508,13 @@ class PPLCNetV3(nn.Module):
             x = F.avg_pool2d(x, [3, 2])
         return x
     
-if __name__=="__main__":
-    model = PPLCNetV3()
+# if __name__=="__main__":
+#     model = PPLCNetV3()
 
-    print(model)
+#     print(model)
 
-    sample = torch.rand([4,3,32,480])
-    print("Number of parameters: ", sum([p.numel() for p in model.parameters() if p.requires_grad]))
+#     sample = torch.rand([4,3,32,480])
+#     print("Number of parameters: ", sum([p.numel() for p in model.parameters() if p.requires_grad]))
 
-    out = model(sample)
-    print(out.shape)
+#     out = model(sample)
+#     print(out.shape)

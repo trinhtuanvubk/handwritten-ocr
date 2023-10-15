@@ -1,22 +1,30 @@
-from .dataset import LMDBDataSet
+import torch
+from .dataset import LMDBDataSet, load_config
 
 from torch.utils.data import DataLoader
 
+def collate_fn(batch):
+    return {
+        'image': torch.stack([x['image'] for x in batch]),
+        'label': torch.tensor([x['label'] for x in batch])
+}
 
 def get_loader(args):
 
-    def collate_fn(batch):
-        pass
 
-    train_dataset = LMDBDataSet(args, mode='train')
+    config = load_config(args.pre_config_path)
+
+    train_dataset = LMDBDataSet(args, config, mode='train')
     train_loader = DataLoader(dataset=train_dataset,
                             drop_last=False,
+                            collate_fn=collate_fn,
                             batch_size=args.batch_size,
                             num_workers=args.num_worker)
     
-    eval_dataset = LMDBDataSet(args, mode='eval')
+    eval_dataset = LMDBDataSet(args, config, mode='eval')
     eval_loader = DataLoader(dataset=eval_dataset,
                              drop_last=False,
+                             collate_fn=collate_fn,
                              batch_size=args.batch_size,
                              num_workers=args.num_worker)
     

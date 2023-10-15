@@ -507,14 +507,32 @@ class PPLCNetV3(nn.Module):
         else:
             x = F.avg_pool2d(x, [3, 2])
         return x
+from nnet.modules.encoder import SequenceEncoder
+from nnet.modules.rec_head import CTCHead
+
+class PPLCNetV3Arch(nn.Module):
+    def __init__(self):
+        super(PPLCNetV3Arch, self).__init__()
+        self.backbone = PPLCNetV3()
+        self.neck = SequenceEncoder(in_channels=512, encoder_type='svtr')
+        self.head = CTCHead(in_channels=192)
+    
+    def forward(self, x):
+        x = self.backbone(x)
+        print(x.shape)
+        x = self.neck(x)
+        print(x.shape)
+        x = self.head(x)
+        return x
     
 if __name__=="__main__":
-    model = PPLCNetV3()
+    # model = PPLCNetV3()
+    model = PPLCNetV3Arch()
 
     print(model)
 
-    sample = torch.rand([4,3,32,480])
+    sample = torch.rand([1,3,32,480])
     print("Number of parameters: ", sum([p.numel() for p in model.parameters() if p.requires_grad]))
 
     out = model(sample)
-    print(out.shape)
+    print(out[0].shape)

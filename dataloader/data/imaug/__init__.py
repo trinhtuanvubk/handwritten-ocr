@@ -18,6 +18,10 @@ from __future__ import unicode_literals
 
 from .operators import *
 
+from .rec_img_aug import BaseDataAugmentation, RecAug, RecConAug, RecResizeImg, ClsResizeImg, \
+    SRNRecResizeImg, GrayRecResizeImg, SARRecResizeImg, PRENResizeImg, \
+    ABINetRecResizeImg, SVTRRecResizeImg, ABINetRecAug, VLRecResizeImg, SPINRecResizeImg, RobustScannerRecResizeImg, \
+    RFLRecResizeImg, SVTRRecAug
 
 def transform(data, ops=None):
     """ transform """
@@ -48,4 +52,5 @@ def create_operators(op_param_list, global_config=None):
             param.update(global_config)
         op = eval(op_name)(**param)
         ops.append(op)
+    print(ops)
     return ops

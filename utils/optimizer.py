@@ -7,3 +7,7 @@ def get_optimizer(model, args):
         raise NotImplementedError
     return optimizer
 
+
+def get_lr_scheduler(optimizer, args):
+    lr_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, args.T_max, eta_min=0)
+    return lr_scheduler
