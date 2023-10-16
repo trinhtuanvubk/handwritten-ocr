@@ -7,7 +7,7 @@ from torch.nn import functional as F
 class CTCHead(nn.Module):
     def __init__(self,
                  in_channels=192,
-                 out_channels=125,
+                 out_channels=232,
                  fc_decay=0.0004,
                  mid_channels=None,
                  return_feats=False,
@@ -45,7 +45,7 @@ class CTCHead(nn.Module):
             x = self.fc1(x)
             predicts = self.fc2(x)
         #   batchsize * T * C ---->  T * batchsize * C
-        predicts = predicts.permute(1, 0, 2)
+        # predicts = predicts.permute(1, 0, 2)
         predicts = predicts.log_softmax(2).requires_grad_()
 
         if self.return_feats:

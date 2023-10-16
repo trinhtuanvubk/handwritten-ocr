@@ -5,14 +5,15 @@ from torch.utils.data import DataLoader
 
 def collate_fn(batch):
     return {
-        'image': torch.stack([x['image'] for x in batch]),
-        'label': torch.tensor([x['label'] for x in batch])
+        'image': torch.stack([torch.tensor(x['image']) for x in batch]),
+        'label': torch.stack([torch.tensor(x['label']) for x in batch])
 }
 
 def get_loader(args):
 
 
     config = load_config(args.pre_config_path)
+    print(config)
 
     train_dataset = LMDBDataSet(args, config, mode='train')
     train_loader = DataLoader(dataset=train_dataset,

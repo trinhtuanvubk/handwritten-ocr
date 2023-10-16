@@ -28,9 +28,13 @@ class Trainer:
         self.iteration = 0
 
     def train_step(self, batch, batch_idx):
-        image = batch['image']
-        label = batch['label']
+        image, label = batch['image'], batch['label']
+        image = image.to(self.args.device)
+        label = label.to(self.args.device)
 
         self.optimizer.zero_grad()
-        preds = self.model(image)
+
+        output = self.model(image)
+
+        # loss = 
 

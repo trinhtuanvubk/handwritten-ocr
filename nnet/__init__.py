@@ -1,17 +1,26 @@
 from .loss import CTCLoss
 from .metric import RecMetric
-from .postprocess.rec_postprocess import CTCLabelDecode
+from .postprocess.rec_postprocess import CTCLabelDecode, BaseRecLabelDecode
 
 from .pipeline import SVTRArch, PPLCNetV3Arch
 
-def get_models(args):
-    if args.model=='SVTR':
-        model = SVTRArch()
-    
-    elif args.model=='LCNETV3':
-        model = PPLCNetV3Arch()
+from .loss import CTCLoss
 
-    return model
+def get_models(args):
+    try:
+        if args.model=='SVTR':
+            model = SVTRArch()
+        
+        elif args.model=='LCNETV3':
+            model = PPLCNetV3Arch()
+        
+        return model.to(args.device)
+    except:
+        print("Only support SVTR or LCNETV3")
+
+def get_loss(args):
+    ctc_loss = CTCLoss(args)
+    return ctc_loss  
 
 def get_postprocess(args):
     ctc_label_decode = CTCLabelDecode(args.character_dict_path, args.use_space_char)

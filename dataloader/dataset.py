@@ -1,16 +1,3 @@
-# copyright (c) 2020 PaddlePaddle Authors. All Rights Reserve.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#    http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
 import numpy as np
 import os
 from torch.utils.data import Dataset
@@ -41,6 +28,7 @@ class LMDBDataSet(Dataset):
 
         
         dataset_config = config['dataset']
+        global_config = config['global']
         self.data_dir = os.path.join(args.lmdb_data_path, mode)
         self.do_shuffle = args.shuffle
 
@@ -50,7 +38,7 @@ class LMDBDataSet(Dataset):
         if self.do_shuffle:
             np.random.shuffle(self.data_idx_order_list)
 
-        self.ops = create_operators(dataset_config['transforms'])
+        self.ops = create_operators(dataset_config['transforms'], global_config)
         self.ext_op_transform_idx = dataset_config.get("ext_op_transform_idx",
                                                        1)
 

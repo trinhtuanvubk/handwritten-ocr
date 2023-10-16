@@ -11,7 +11,7 @@ class SVTRArch(nn.Module):
     def __init__(self):
         super(SVTRArch, self).__init__()
         self.backbone = SVTRNet()
-        self.neck = SequenceEncoder(in_channels=192, encoder_type='svtr')
+        self.neck = SequenceEncoder(in_channels=192, encoder_type='reshape')
         self.head = CTCHead(in_channels=192)
     
     def forward(self, x):

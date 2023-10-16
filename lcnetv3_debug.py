@@ -531,7 +531,7 @@ if __name__=="__main__":
 
     print(model)
 
-    sample = torch.rand([1,3,32,480])
+    sample = torch.rand([1,3,48,640])
     print("Number of parameters: ", sum([p.numel() for p in model.parameters() if p.requires_grad]))
 
     out = model(sample)

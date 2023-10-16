@@ -6,9 +6,9 @@ def get_args():
     parser = argparse.ArgumentParser()
     
     parser.add_argument('--seed', type=int, default=0)
-    parser.add_argument('--scenario', type=str, default='train_model')
+    parser.add_argument('--scenario', type=str, default='test_output_model')
 
-    parser.add_argument('--model', type=str, default='svtr')
+    parser.add_argument('--model', type=str, default='LCNETV3')
 
     parser.add_argument('--own_data_path', type=str, default="./data/data_sample_eval/")
     parser.add_argument('--raw_data_type', type=str, default='json', help='types: json or folder')
