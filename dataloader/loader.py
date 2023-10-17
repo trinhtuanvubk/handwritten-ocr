@@ -4,9 +4,16 @@ from .dataset import LMDBDataSet, load_config
 from torch.utils.data import DataLoader
 
 def collate_fn(batch):
+    keys = batch[0].keys()
+    print(keys)
+    print(batch[0]['label_ace'])
+    print(len(batch[0]['label_ace']))
     return {
+        # key: torch.stack([torch.tensor(x[key]) for x in batch]) for key in keys
         'image': torch.stack([torch.tensor(x['image']) for x in batch]),
-        'label': torch.stack([torch.tensor(x['label']) for x in batch])
+        'label': torch.stack([torch.tensor(x['label']) for x in batch]),
+        'length': torch.stack([torch.tensor(x['length'], dtype=torch.int64) for x in batch])
+
 }
 
 def get_loader(args):
@@ -23,6 +30,7 @@ def get_loader(args):
                             num_workers=args.num_worker)
     
     eval_dataset = LMDBDataSet(args, config, mode='eval')
+    print(iter(eval_dataset))
     eval_loader = DataLoader(dataset=eval_dataset,
                              drop_last=False,
                              collate_fn=collate_fn,

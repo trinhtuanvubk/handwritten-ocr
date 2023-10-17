@@ -20,13 +20,14 @@ def checkImageIsValid(imageBin):
         return False
     return True
 
-def create_lmdb_data(args, mode = 'train'):
+def create_lmdb_data(args, mode = 'eval'):
     # Đường dẫn đến folder chứa các file ảnh và folder label
     if args.raw_data_type=='json':
         json_labels = os.path.join(args.own_data_path, "labels.json")
         with open(json_labels, 'r') as f:
             data = json.load(f)
         # ratio = 0.5
+        os.makedirs(os.path.join(args.lmdb_data_path, mode), exist_ok=True)
         env = lmdb.open(os.path.join(args.lmdb_data_path, mode), map_size=int(1e12))
         with env.begin(write=True) as txn:
             # Duyệt qua các file ảnh trong folder
