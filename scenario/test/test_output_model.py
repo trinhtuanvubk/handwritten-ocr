@@ -43,7 +43,7 @@ def test_output_model(args):
         print(output)
         metric_ = metric(output)
         print(f"metric: {metric_}")
-
+        # metric: {'acc': 0.0, 'norm_edit_dis': 4.99997500014171e-06}
 
         break
         
