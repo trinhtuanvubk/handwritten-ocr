@@ -86,16 +86,16 @@ class Trainer:
 
         for epoch in range(self.args.num_epoch):
             # eval 
-            self.model.eval()
-            with tqdm.tqdm(self.eval_loader, unit="it") as pbar:
-                pbar.set_description(f'Evaluate epoch {epoch}')
-                test_accuracy = []
-                for batch_idx, batch in enumerate(pbar):
-                    # validate
-                    metric = self.eval_step(batch, batch_idx)
-                    test_accuracy.append(float(metric['acc']))
-                    pbar.set_postfix(accuracy=float(metric['acc']))
-            self.write_eval_metric_to_tensorboard(epoch, np.mean(test_accuracy))
+            # self.model.eval()
+            # with tqdm.tqdm(self.eval_loader, unit="it") as pbar:
+            #     pbar.set_description(f'Evaluate epoch {epoch}')
+            #     test_accuracy = []
+            #     for batch_idx, batch in enumerate(pbar):
+            #         # validate
+            #         metric = self.eval_step(batch, batch_idx)
+            #         test_accuracy.append(float(metric['acc']))
+            #         pbar.set_postfix(accuracy=float(metric['acc']))
+            # self.write_eval_metric_to_tensorboard(epoch, np.mean(test_accuracy))
             
             # train
             self.model.train()
