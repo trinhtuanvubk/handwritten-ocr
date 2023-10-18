@@ -4,10 +4,10 @@ from .dataset import LMDBDataSet, load_config
 from torch.utils.data import DataLoader
 
 def collate_fn(batch):
-    keys = batch[0].keys()
-    print(keys)
-    print(batch[0]['label_ace'])
-    print(len(batch[0]['label_ace']))
+    # keys = batch[0].keys()
+    # print(keys)
+    # print(batch[0]['label_ace'])
+    # print(len(batch[0]['label_ace']))
     return {
         # key: torch.stack([torch.tensor(x[key]) for x in batch]) for key in keys
         'image': torch.stack([torch.tensor(x['image']) for x in batch]),

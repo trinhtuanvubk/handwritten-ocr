@@ -6,7 +6,9 @@ def get_args():
     parser = argparse.ArgumentParser()
     
     parser.add_argument('--seed', type=int, default=0)
-    parser.add_argument('--scenario', type=str, default='test_output_model')
+    # parser.add_argument('--scenario', type=str, default='test_output_model')
+    parser.add_argument('--scenario', type=str, default='train')
+# 
 
     parser.add_argument('--model', type=str, default='LCNETV3')
 
@@ -19,9 +21,11 @@ def get_args():
     # parser.add_argument('--train_path', type=str, default='./data/own_lmdb/train/')
     # parser.add_argument('--eval_path', type=str, default='./data/own_lmdb/eval/')
     parser.add_argument('--learning_rate', type=float, default=0.0001)
-    parser.add_argument('--optimizer', type=str, default='adamW')
+    parser.add_argument('--optimizer', type=str, default='adamw')
     parser.add_argument('--T_max', type=int, default=10)
     parser.add_argument('--batch_size', type=int, default=2)
+    parser.add_argument('--num_epoch', type=str, default=50)
+    parser.add_argument('--log_iter', type=int, default=1)
     parser.add_argument('--num_worker', type=int, default=4)
     parser.add_argument('--shuffle', action='store_false')
     args = parser.parse_args()
