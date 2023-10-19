@@ -24,7 +24,8 @@ class Trainer:
 
         self.lr_scheduler = utils.get_lr_scheduler(self.optimizer, args)
 
-        self.writer = SummaryWriter(get_logs_folder(args))
+        self.log_folder = get_logs_folder(args)
+        self.writer = SummaryWriter(self.log_folder)
 
         self.metric = nnet.get_metric(args)
 
@@ -35,7 +36,7 @@ class Trainer:
         
 
     def train_step(self, batch, batch_idx):
-        image, label, label_length= batch['image'], batch['label']
+        image, label, label_length= batch['image'], batch['label'], batch['length']
         image = image.to(self.args.device)
         label = label.to(self.args.device)
 
@@ -71,11 +72,13 @@ class Trainer:
             label = label.to(self.args.device)
 
             output = self.model(image)
+            
             output = output[0]
+            print("verify shape: {}".format(output.shape))
             
             postprocessed_output = self.postprocess(output.cpu().detach().numpy(),
                                                     label.cpu().numpy())
-            
+            print(postprocessed_output)
             metric_ = self.metric(postprocessed_output)
 
         return metric_
@@ -86,16 +89,16 @@ class Trainer:
 
         for epoch in range(self.args.num_epoch):
             # eval 
-            # self.model.eval()
-            # with tqdm.tqdm(self.eval_loader, unit="it") as pbar:
-            #     pbar.set_description(f'Evaluate epoch {epoch}')
-            #     test_accuracy = []
-            #     for batch_idx, batch in enumerate(pbar):
-            #         # validate
-            #         metric = self.eval_step(batch, batch_idx)
-            #         test_accuracy.append(float(metric['acc']))
-            #         pbar.set_postfix(accuracy=float(metric['acc']))
-            # self.write_eval_metric_to_tensorboard(epoch, np.mean(test_accuracy))
+            self.model.eval()
+            with tqdm.tqdm(self.eval_loader, unit="it") as pbar:
+                pbar.set_description(f'Evaluate epoch {epoch}')
+                test_accuracy = []
+                for batch_idx, batch in enumerate(pbar):
+                    # validate
+                    metric = self.eval_step(batch, batch_idx)
+                    test_accuracy.append(float(metric['acc']))
+                    pbar.set_postfix(accuracy=float(metric['acc']))
+            self.write_eval_metric_to_tensorboard(epoch, metric)
             
             # train
             self.model.train()
@@ -118,8 +121,8 @@ class Trainer:
                 self.accuracy = np.mean(test_accuracy)
                 self.save_checkpoint()
 
-            if self.scheduler != None:
-                self.scheduler.step(self.accuracy)
+            if self.lr_scheduler != None:
+                self.lr_scheduler.step(self.accuracy)
         
     def fit(self):
         try:
@@ -132,12 +135,12 @@ class Trainer:
         torch.nn.utils.clip_grad_norm_(self.model.parameters(), self.args.clip_grad_norm)
     
     def write_eval_metric_to_tensorboard(self, epoch, metrics):
-        # compute average
-        for key in metrics:
-            metrics[key] = np.mean(metrics[key])
-        # display
-        print('Evaluate epoch:{}: si_snr={:0.2f} pesq={:0.2f},  stoi={:0.2f}, estoi={:0.2f}' \
-            .format(epoch, metrics['acc'], metrics['norm_edit_dis']))
+        accuracy = metrics['acc']
+        norm_edit_dis = metrics['norm_edit_dis']
+        with open(f'{os.path.join(self.log_folder, "train_log.txt")}', 'a') as fin:
+            fin.write(f'Evaluate epoch {epoch} - acc: {accuracy} - norm_edit_dis: {norm_edit_dis}\n')
+        print(f'Evaluate epoch {epoch} - acc: {accuracy} - norm_edit_dis: {norm_edit_dis}\n')
+
         # write to tensorboard
         self.writer.add_scalars('validation metric', metrics, epoch)
 
@@ -165,7 +168,15 @@ class Trainer:
             print(f'Best accuracy: {self.accuracy}')
 
     
-    
+    def save_checkpoint(self):
+        # save checkpoint
+        torch.save({
+            'accuracy': self.accuracy,
+            'iteration': self.iteration,
+            'epoch': self.epoch,
+            'model_state_dict': self.model.state_dict(),
+            }, self.get_checkpoint_path())
+        print('[+] checkpoint saved')
 
     
 def train(args):

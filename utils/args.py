@@ -10,7 +10,7 @@ def get_args():
     parser.add_argument('--scenario', type=str, default='train')
 # 
 
-    parser.add_argument('--model', type=str, default='LCNETV3')
+    parser.add_argument('--model', type=str, default='SVTR')
 
     parser.add_argument('--own_data_path', type=str, default="./data/data_sample_eval/")
     parser.add_argument('--raw_data_type', type=str, default='json', help='types: json or folder')
@@ -20,12 +20,13 @@ def get_args():
     parser.add_argument('--use_space_char', action='store_false')
     # parser.add_argument('--train_path', type=str, default='./data/own_lmdb/train/')
     # parser.add_argument('--eval_path', type=str, default='./data/own_lmdb/eval/')
-    parser.add_argument('--learning_rate', type=float, default=0.0001)
+    parser.add_argument('--learning_rate', type=float, default=1e-4)
     parser.add_argument('--optimizer', type=str, default='adamw')
     parser.add_argument('--T_max', type=int, default=10)
-    parser.add_argument('--batch_size', type=int, default=2)
-    parser.add_argument('--num_epoch', type=str, default=50)
+    parser.add_argument('--batch_size', type=int, default=5)
+    parser.add_argument('--num_epoch', type=str, default=2000)
     parser.add_argument('--log_iter', type=int, default=1)
+    parser.add_argument('--clip_grad_norm', type=float, default=1.0)
     parser.add_argument('--num_worker', type=int, default=4)
     parser.add_argument('--shuffle', action='store_false')
     args = parser.parse_args()

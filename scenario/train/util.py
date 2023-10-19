@@ -1,7 +1,7 @@
 import os
 
 def get_ckpt_folder(args):
-    folder = f'../ckpt/{args.model}/checkpoints'
+    folder = f'./ckpt/{args.model}/checkpoints'
     if not os.path.exists(folder):
         os.makedirs(folder)
     return folder

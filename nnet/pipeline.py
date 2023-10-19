@@ -16,10 +16,11 @@ class SVTRArch(nn.Module):
     
     def forward(self, x):
         x = self.backbone(x)
-        print(x.shape)
+        # print(x.shape)
         x = self.neck(x)
-        print(x.shape)
+        # print(x.shape)
         x = self.head(x)
+        print("outshape model: {}".format(x[0].shape))
         return x
     
 class PPLCNetV3Arch(nn.Module):
@@ -31,10 +32,11 @@ class PPLCNetV3Arch(nn.Module):
     
     def forward(self, x):
         x = self.backbone(x)
-        print(x.shape)
+        # print(x.shape)
         x = self.neck(x)
-        print(x.shape)
+        # print(x.shape)
         x = self.head(x)
+        print("outshape model: {}".format(x[0].shape))
         return x
     
 
