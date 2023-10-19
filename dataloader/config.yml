@@ -13,10 +13,11 @@ dataset:
         ext_data_num: 2
         image_shape: [48, 720, 3]
         max_text_length: 60
-    - SVTRRecAug:
+    - RecAug:
     - CTCLabelEncode:
-    - RecResizeImg:
+    - SVTRRecResizeImg:
         image_shape: [3, 48, 720]
+        padding: true
 
 
 
