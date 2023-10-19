@@ -15,6 +15,7 @@ def get_args():
     parser.add_argument('--own_data_path', type=str, default="./data/data_sample_eval/")
     parser.add_argument('--raw_data_type', type=str, default='json', help='types: json or folder')
     parser.add_argument('--lmdb_data_path', type=str, default='./data/own_lmdb/')
+    parser.add_argument('--data_mode', type=str, default='train', help="to create folder train or eval")
     parser.add_argument('--pre_config_path', type=str, default='./dataloader/config.yml')
     parser.add_argument('--character_dict_path', type=str, default='./utils/vi_dict.txt')
     parser.add_argument('--use_space_char', action='store_false')
