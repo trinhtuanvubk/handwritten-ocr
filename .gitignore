@@ -2,6 +2,7 @@
 ckpt
 data/*
 **/trash*.py
+.vscode/
 
 
 # Byte-compiled / optimized / DLL files
