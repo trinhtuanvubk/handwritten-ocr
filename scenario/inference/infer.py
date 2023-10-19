@@ -1,7 +1,7 @@
 import torch
 import nnet
 from dataloader.data.imaug import transform, create_operators
-from ...utils.util import *
+from utils.util import *
 import time
 
 def infer(args):

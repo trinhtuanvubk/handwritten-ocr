@@ -22,7 +22,7 @@ def get_loader(args):
     config = load_config(args.pre_config_path)
     print(config)
 
-    train_dataset = LMDBDataSet(args, config, mode='eval')
+    train_dataset = LMDBDataSet(args, config, mode='train')
     train_loader = DataLoader(dataset=train_dataset,
                             drop_last=False,
                             collate_fn=collate_fn,

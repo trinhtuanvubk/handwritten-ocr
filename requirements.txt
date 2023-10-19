@@ -12,3 +12,4 @@ evaluate
 jiwer
 pathlib
 loguru
+glob2
