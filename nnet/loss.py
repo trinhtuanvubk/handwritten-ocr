@@ -3,6 +3,9 @@ import torch
 from torch import nn
 
 
+'''NOTE
+not using now
+'''
 class CTCLoss(nn.Module):
     def __init__(self, use_focal_loss=False, **kwargs):
         super(CTCLoss, self).__init__()

@@ -137,9 +137,10 @@ class Trainer:
     def write_eval_metric_to_tensorboard(self, epoch, metrics):
         accuracy = metrics['acc']
         norm_edit_dis = metrics['norm_edit_dis']
+        cer = metrics['cer_score']
         with open(f'{os.path.join(self.log_folder, "train_log.txt")}', 'a') as fin:
-            fin.write(f'Evaluate epoch {epoch} - acc: {accuracy} - norm_edit_dis: {norm_edit_dis}\n')
-        print(f'Evaluate epoch {epoch} - acc: {accuracy} - norm_edit_dis: {norm_edit_dis}\n')
+            fin.write(f'Evaluate epoch {epoch} - acc: {accuracy} - norm_edit_dis: {norm_edit_dis} - cer: {cer}\n')
+        print(f'Evaluate epoch {epoch} - acc: {accuracy} - norm_edit_dis: {norm_edit_dis} - cer: {cer}\n')
 
         # write to tensorboard
         self.writer.add_scalars('validation metric', metrics, epoch)

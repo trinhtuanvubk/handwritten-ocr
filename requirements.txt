@@ -8,3 +8,5 @@ six
 pyyaml
 rapidfuzz
 tensorboard
+evaluate
+jiwer
