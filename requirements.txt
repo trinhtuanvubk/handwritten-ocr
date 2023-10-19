@@ -11,3 +11,4 @@ tensorboard
 evaluate
 jiwer
 pathlib
+loguru

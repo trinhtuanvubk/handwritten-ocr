@@ -93,10 +93,14 @@ class Trainer:
             with tqdm.tqdm(self.eval_loader, unit="it") as pbar:
                 pbar.set_description(f'Evaluate epoch {epoch}')
                 test_accuracy = []
+                test_norm_edit_dis = []
+                test_cer = []
                 for batch_idx, batch in enumerate(pbar):
                     # validate
                     metric = self.eval_step(batch, batch_idx)
                     test_accuracy.append(float(metric['acc']))
+                    test_norm_edit_dis.append(float(metric['norm_edit_dis']))
+                    test_cer.append(float(metric['cer_score']))
                     pbar.set_postfix(accuracy=float(metric['acc']))
             self.write_eval_metric_to_tensorboard(epoch, metric)
             
@@ -117,8 +121,11 @@ class Trainer:
                         self.write_train_metric_to_tensorboard(loss)
 
             # save checkpoint
-            if self.accuracy < np.mean(test_accuracy):
+            # if self.accuracy < np.mean(test_accuracy):
+            if self.norm_edit_dis < np.mean(test_norm_edit_dis):
                 self.accuracy = np.mean(test_accuracy)
+                self.norm_edit_dis = np.mean(test_norm_edit_dis)
+                self.cer = np.mean(test_cer)
                 self.save_checkpoint()
 
             if self.lr_scheduler != None:
@@ -159,13 +166,22 @@ class Trainer:
     def load_checkpoit(self):
         self.epoch = 0
         self.accuracy = 0.
+        self.cer = 0.
+        self.norm_edit_dis = 0.
         path = self.get_checkpoint_path()
         if os.path.exists(path):
             checkpoint = torch.load(path)
             self.model.load_state_dict(checkpoint['model_state_dict'])
             self.epoch = checkpoint['epoch']
             self.iteration = checkpoint['iteration']
-            self.accuracy = checkpoint['accuracy']
+            try:
+                self.accuracy = checkpoint['accuracy']
+                self.self.cer = checkpoint['cer']
+                self.norm_edit_dis = checkpoint['norm_edit_dis']
+            except:
+                self.accuracy = 0.
+                self.cer = 0.
+                self.norm_edit_dis = 0.
             print(f'Best accuracy: {self.accuracy}')
 
     
@@ -173,6 +189,8 @@ class Trainer:
         # save checkpoint
         torch.save({
             'accuracy': self.accuracy,
+            'cer': self.cer,
+            'norm_edit_dis': self.norm_edit_dis,
             'iteration': self.iteration,
             'epoch': self.epoch,
             'model_state_dict': self.model.state_dict(),

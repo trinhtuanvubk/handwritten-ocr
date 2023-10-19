@@ -31,6 +31,8 @@ def get_args():
     parser.add_argument('--clip_grad_norm', type=float, default=1.0)
     parser.add_argument('--num_worker', type=int, default=4)
     parser.add_argument('--shuffle', action='store_false')
+
+    parser.add_argument('--image_test_path', type=str, default='/home/sangdt/research/voice/svtr-pytorch/data/vn_handwritten_images/data/1.jpg')
     args = parser.parse_args()
 
     args.device = torch.device(f'cuda' if torch.cuda.is_available() else 'cpu')

@@ -1,10 +1,13 @@
 import torch
 import nnet
 from dataloader.data.imaug import transform, create_operators
-from ...utils.util import *
+from utils.util import *
+from utils import get_args
 import time
 
-def infer(args):
+args = get_args()
+
+def submission(args):
     imgC, imgH, imgW = (3,48,720)
     max_wh_ratio = imgW / imgH
     model = nnet.get_models(args)
