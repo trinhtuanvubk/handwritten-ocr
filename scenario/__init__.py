@@ -1,5 +1,4 @@
-from .prepare_data.create_lmdb import create_lmdb_data
-
+from .prepare_data import create_lmdb_data, train_test_split
 from .test import test_batch_data, test_output_model
 
 from .train import train

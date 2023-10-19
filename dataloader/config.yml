@@ -11,12 +11,14 @@ dataset:
     - RecConAug:
         prob: 0.5
         ext_data_num: 2
-        image_shape: [32, 480, 3]
+        image_shape: [48, 720, 3]
         max_text_length: 60
-    - RecAug: null
+    - SVTRRecAug:
     - CTCLabelEncode:
     - RecResizeImg:
-        image_shape: [3, 32, 480]
+        image_shape: [3, 48, 720]
+
+
 
 
 

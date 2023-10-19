@@ -10,3 +10,4 @@ rapidfuzz
 tensorboard
 evaluate
 jiwer
+pathlib

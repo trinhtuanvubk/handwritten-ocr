@@ -20,6 +20,13 @@ python3 main.py --scenario train --model SVTR
 
 ### Eval
 
+### TODO
+- `scenario`: - prepare_data: convert image to GRAY by opencv
+              - train: 
+              - test: write infer code to run public test
+
+-  `nnet`: find the way to remove hard code: input shape and output max length
+
 ### Note
 - See `utils/args.py` to modify config
 - Some hard code at set max text length to the last layer in  `nnet/modules/rec_head`

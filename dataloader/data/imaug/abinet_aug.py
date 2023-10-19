@@ -164,7 +164,7 @@ class CVRandomAffine(object):
         endpoints = [(project(x, y, *M[0]), project(x, y, *M[1])) for x, y in startpoints]
         
         rect = cv2.minAreaRect(np.array(endpoints))
-        bbox = cv2.boxPoints(rect).astype(dtype=np.int)
+        bbox = cv2.boxPoints(rect).astype(dtype=np.int64)
         max_x, max_y = bbox[:, 0].max(), bbox[:, 1].max()
         min_x, min_y = bbox[:, 0].min(), bbox[:, 1].min()
 
