@@ -20,7 +20,7 @@ class SVTRArch(nn.Module):
         x = self.neck(x)
         # print(x.shape)
         x = self.head(x)
-        print("outshape model: {}".format(x[0].shape))
+        # print("outshape model: {}".format(x[0].shape))
         return x
     
 class PPLCNetV3Arch(nn.Module):
@@ -36,7 +36,7 @@ class PPLCNetV3Arch(nn.Module):
         x = self.neck(x)
         # print(x.shape)
         x = self.head(x)
-        print("outshape model: {}".format(x[0].shape))
+        # print("outshape model: {}".format(x[0].shape))
         return x
     
 

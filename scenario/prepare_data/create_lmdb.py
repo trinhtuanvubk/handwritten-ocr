@@ -113,11 +113,11 @@ def create_lmdb_data(args):
         val_paths = [
             {'image_folder': './data/pretrain/images_hw_eval',
             'label_folder': './data/pretrain/labels_hw_eval'}]
-        paths = train_paths
-        # paths = val_paths
+        # paths = train_paths
+        paths = val_paths
         # Đường dẫn đến file LMDB sẽ được tạo
         # lmdb_path = "./ocr_reg_lmdb/train/"
-        lmdb_path = "./data/pretrain_lmdb/train/"
+        lmdb_path = "./data/pretrain_lmdb/eval/"
         # Mở file LMDB để ghi dữ liệu
         env = lmdb.open(lmdb_path, map_size=int(1e12))
 
@@ -156,7 +156,9 @@ def create_lmdb_data(args):
                     label_file = image_file[:-4] + ".txt"
                     with open(os.path.join(label_folder, label_file), "r") as f:
                         label = f.read().strip()
-
+                        if len(label)>=60: 
+                            print(label_file)
+                            continue
                     # Ghi dữ liệu vào LMDB
                     imageKey = 'image-%09d'.encode() % cnt
                     labelKey = 'label-%09d'.encode() % cnt
