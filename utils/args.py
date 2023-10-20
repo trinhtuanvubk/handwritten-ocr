@@ -8,7 +8,7 @@ def get_args():
     parser.add_argument('--seed', type=int, default=0)
     # parser.add_argument('--scenario', type=str, default='test_output_model')
     parser.add_argument('--scenario', type=str, default='train')
-# 
+
 
     parser.add_argument('--model', type=str, default='SVTR')
 
