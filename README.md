@@ -18,7 +18,13 @@ python3 main.py --create_lmdb_data
 python3 main.py --scenario train --model SVTR
 ```
 
-### Eval
+### Test
+
+### Submission
+
+```
+python3 submission.py
+```
 
 ### TODO
 - `scenario`: - prepare_data: convert image to GRAY by opencv
