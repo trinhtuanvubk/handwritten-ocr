@@ -62,10 +62,12 @@ def submission(args):
 
     # Get a list of all images in all subfolders
     image_path = []
+    images = []
     for subfolder in subfolders:
         image_path += glob.glob(subfolder + "/*.*")
     for i in image_path:
-        image = cv2.imread()
+        image = cv2.imread(i)
+        images.append(image)
 
     print(images)
     img_num = len(images)
