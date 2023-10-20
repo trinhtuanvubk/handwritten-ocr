@@ -3,6 +3,7 @@ ckpt
 data/*
 **/trash*.py
 .vscode/launch.json
+test_shape.py
 
 
 # Byte-compiled / optimized / DLL files
