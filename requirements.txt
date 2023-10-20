@@ -13,3 +13,4 @@ jiwer
 pathlib
 loguru
 glob2
+python-csv
