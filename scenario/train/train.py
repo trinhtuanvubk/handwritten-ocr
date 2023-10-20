@@ -29,7 +29,7 @@ class Trainer:
 
         self.metric = nnet.get_metric(args)
 
-        self.criterion = CTCLoss()
+        self.criterion = CTCLoss(zero_infinity=True)
 
         self.iteration = 0
 
@@ -74,7 +74,7 @@ class Trainer:
             output = self.model(image)
             
             output = output[0]
-            print("verify shape: {}".format(output.shape))
+            # print("verify shape: {}".format(output.shape))
             
             postprocessed_output = self.postprocess(output.cpu().detach().numpy(),
                                                     label.cpu().numpy())
@@ -106,6 +106,7 @@ class Trainer:
             
             # train
             self.model.train()
+            torch.autograd.set_detect_anomaly(True)
             with tqdm.tqdm(self.train_loader, unit="it") as pbar:
                 pbar.set_description(f'Epoch {epoch}')
                 for batch_idx, batch in enumerate(pbar):
