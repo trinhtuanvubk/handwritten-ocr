@@ -7,14 +7,15 @@ def get_args():
     
     parser.add_argument('--seed', type=int, default=0)
     # parser.add_argument('--scenario', type=str, default='test_output_model')
-    parser.add_argument('--scenario', type=str, default='train')
-
+    parser.add_argument('--scenario', type=str, default='train_parallel')
 
     parser.add_argument('--model', type=str, default='SVTR')
+    parser.add_argument('--pretrain_dir', type=str, default='SVTR_pretrain_30k')
+    parser.add_argument('--ckpt_dir', type=str, default='SVTR_kalapa2110')
 
-    parser.add_argument('--raw_data_path', type=str, default="./data/OCR/training_data")
+    parser.add_argument('--raw_data_path', type=str, default="./data/kalapa_fix")
     parser.add_argument('--raw_data_type', type=str, default='hihi', help='types: json or folder')
-    parser.add_argument('--lmdb_data_path', type=str, default='./data/pretrain_lmdb/')
+    parser.add_argument('--lmdb_data_path', type=str, default='./data/kalapa_lmdb_fix/')
     # parser.add_argument('--ratio_lmdb', type=float, default=0.8, help="train test split")
     parser.add_argument('--data_mode', type=str, default='train', help="to create folder train or eval")
     parser.add_argument('--pre_config_path', type=str, default='./dataloader/config.yml')
@@ -35,6 +36,6 @@ def get_args():
     parser.add_argument('--image_test_path', type=str, default='/home/sangdt/research/voice/svtr-pytorch/data/vn_handwritten_images/data/1.jpg')
     args = parser.parse_args()
 
-    args.device = torch.device(f'cuda' if torch.cuda.is_available() else 'cpu')
+    args.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
     return args

@@ -43,7 +43,7 @@ python3 main.py --scenario train \
 ### Inference
 - To run inference test:
 ```bash
-python3 main.py --scenario infer --image_test_path "path/to/image/
+python3 main.py --scenario infer --image_test_path "/home/sangdt/research/voice/svtr-pytorch/data/OCR/public_test/images/14/0.jpg"
 ```
 
 ### Submission

@@ -22,15 +22,15 @@ def get_loader(args):
     config = load_config(args.pre_config_path)
     print(config)
 
-    train_dataset = LMDBDataSet(args, config, mode='eval')
+    train_dataset = LMDBDataSet(args, config, mode='train')
     train_loader = DataLoader(dataset=train_dataset,
                             drop_last=False,
                             collate_fn=collate_fn,
                             batch_size=args.batch_size,
                             num_workers=args.num_worker)
     
-    eval_dataset = LMDBDataSet(args, config, mode='eval')
-    print(iter(eval_dataset))
+    eval_dataset = LMDBDataSet(args, config, mode='val')
+    # print(iter(eval_dataset))
     eval_loader = DataLoader(dataset=eval_dataset,
                              drop_last=False,
                              collate_fn=collate_fn,

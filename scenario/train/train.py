@@ -6,7 +6,7 @@ import os
 
 from torch.nn import CTCLoss
 import utils
-from .util import get_ckpt_folder, get_logs_folder, get_ckpt_name
+from .util import get_ckpt_folder, get_logs_folder, get_ckpt_name, get_pretrain_folder
 
 import nnet
 import dataloader
@@ -15,7 +15,7 @@ class Trainer:
     def __init__(self, args):
         self.args = args
         self.train_loader, self.eval_loader = dataloader.get_loader(args)
-        self.model = nnet.get_models(args)
+        self.model = nnet.get_models(args).to(self.args.device)
         nnet.print_summary(self.model, verbose=True)
 
         self.postprocess = nnet.get_postprocess(args)
@@ -85,7 +85,7 @@ class Trainer:
     
 
     def _fit(self):
-        self.load_checkpoit()
+        self.load_checkpoint()
 
         for epoch in range(self.args.num_epoch):
             # eval 
@@ -164,12 +164,17 @@ class Trainer:
         ckpt_name = get_ckpt_name(self.args)
         return os.path.join(ckpt_folder, ckpt_name) + '.ckpt'
     
-    def load_checkpoit(self):
+    def get_pretrain_path(self):
+        ckpt_folder = get_pretrain_folder(self.args)
+        ckpt_name = get_ckpt_name(self.args)
+        return os.path.join(ckpt_folder, ckpt_name) + '.ckpt'
+    
+    def load_checkpoint(self):
         self.epoch = 0
         self.accuracy = 0.
         self.cer = 0.
         self.norm_edit_dis = 0.
-        path = self.get_checkpoint_path()
+        path = self.get_pretrain_path()
         if os.path.exists(path):
             checkpoint = torch.load(path)
             self.model.load_state_dict(checkpoint['model_state_dict'])

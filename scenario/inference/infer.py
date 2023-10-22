@@ -9,9 +9,10 @@ def infer(args):
     max_wh_ratio = imgW / imgH
     model = nnet.get_models(args)
     ckpt_path = "/home/sangdt/research/voice/svtr-pytorch/ckpt/SVTR/checkpoints/SVTR.ckpt"
+    # ckpt_path = "./ckpt/SVTR_best_200epochs.ckpt"
     checkpoint = torch.load(ckpt_path, map_location=args.device)
     model.load_state_dict(checkpoint['model_state_dict'])
-    model.eval()
+    model = model.to(args.device)
     model.eval()
     postprocess = nnet.get_postprocess(args)
 

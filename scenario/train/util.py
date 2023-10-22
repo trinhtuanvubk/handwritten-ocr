@@ -1,7 +1,13 @@
 import os
 
+def get_pretrain_folder(args):
+    folder = f'./ckpt/{args.pretrain_dir}/checkpoints'
+    if not os.path.exists(folder):
+        os.makedirs(folder)
+    return folder
+
 def get_ckpt_folder(args):
-    folder = f'./ckpt/{args.model}/checkpoints'
+    folder = f'./ckpt/{args.ckpt_dir}/checkpoints'
     if not os.path.exists(folder):
         os.makedirs(folder)
     return folder

@@ -13,10 +13,10 @@ def submission_one_sample(args):
     imgC, imgH, imgW = (3,48,720)
     max_wh_ratio = imgW / imgH
     model = nnet.get_models(args)
-    ckpt_path = "/home/sangdt/research/voice/svtr-pytorch/ckpt/SVTR/checkpoints/SVTR.ckpt"
+    ckpt_path = "/home/sangdt/research/voice/svtr-pytorch/ckpt/SVTR_kalapa2110/checkpoints/SVTR.ckpt"
     checkpoint = torch.load(ckpt_path, map_location=args.device)
     model.load_state_dict(checkpoint['model_state_dict'])
-    model.eval()
+    model = model.to(args.device)
     model.eval()
     postprocess = nnet.get_postprocess(args)
 
@@ -42,12 +42,15 @@ def submission_one_sample(args):
 
 
 def submission(args):
-    with open('/home/sangdt/research/voice/svtr-pytorch/data/OCR/my.csv', 'a+') as f:
+    with open('/home/sangdt/research/voice/svtr-pytorch/data/OCR/2110_0.csv', 'a+') as f:
         writer = csv.writer(f,  delimiter=',')
+        writer.writerow(["id", "answer"])
+
         imgC, imgH, imgW = (3,48,720)
         max_wh_ratio = imgW / imgH
         model = nnet.get_models(args)
-        ckpt_path = "./ckpt/SVTR/checkpoints/SVTR.ckpt"
+        model = model.to(args.device)
+        ckpt_path = "./ckpt/SVTR_kalapa2110/checkpoints/SVTR.ckpt"
         checkpoint = torch.load(ckpt_path, map_location=args.device)
         model.load_state_dict(checkpoint['model_state_dict'])
         model.eval()

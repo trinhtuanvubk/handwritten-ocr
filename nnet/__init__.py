@@ -14,7 +14,7 @@ def get_models(args):
         elif args.model=='LCNETV3':
             model = PPLCNetV3Arch()
         
-        return model.to(args.device)
+        return model
     except:
         print("Only support SVTR or LCNETV3")
 
