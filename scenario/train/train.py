@@ -88,53 +88,68 @@ class Trainer:
         self.load_checkpoint()
 
         for epoch in range(self.args.num_epoch):
-            # eval 
-            self.model.eval()
-            with tqdm.tqdm(self.eval_loader, unit="it") as pbar:
-                pbar.set_description(f'Evaluate epoch {epoch}')
-                test_accuracy = []
-                test_norm_edit_dis = []
-                test_cer = []
-                for batch_idx, batch in enumerate(pbar):
-                    # validate
-                    metric = self.eval_step(batch, batch_idx)
-                    test_accuracy.append(float(metric['acc']))
-                    test_norm_edit_dis.append(float(metric['norm_edit_dis']))
-                    test_cer.append(float(metric['cer_score']))
-                    pbar.set_postfix(accuracy=float(metric['acc']))
-            # self.write_eval_metric_to_tensorboard(epoch, metric)
+            # eval after 6 epochs
+            if epoch % 1 == 0:
+                self.model.eval()
+                with tqdm.tqdm(self.eval_loader, unit="it") as pbar:
+                    pbar.set_description(f'Evaluate epoch {epoch}')
+                    test_accuracy = []
+                    test_norm_edit_dis = []
+                    test_cer = []
+                    for batch_idx, batch in enumerate(pbar):
+                        # validate
+                        metric = self.eval_step(batch, batch_idx)
+                        test_accuracy.append(float(metric['acc']))
+                        test_norm_edit_dis.append(float(metric['norm_edit_dis']))
+                        test_cer.append(float(metric['cer_score']))
+                        pbar.set_postfix(accuracy=float(metric['acc']))
+                
+                # save checkpoint
+                # if self.accuracy < np.mean(test_accuracy):
+                if self.norm_edit_dis < np.mean(test_norm_edit_dis):
+                    self.accuracy = np.mean(test_accuracy)
+                    self.norm_edit_dis = np.mean(test_norm_edit_dis)
+                    self.cer = np.mean(test_cer)
+                    self.save_checkpoint()
 
-            with open(f'{os.path.join(self.log_folder, "train_log.txt")}', 'a') as fin:
-                fin.write(f'Evaluate epoch {epoch} - acc: {np.mean(test_accuracy)} - norm_edit_dis: {np.mean(test_norm_edit_dis)} - cer: {np.mean(test_cer)}\n')
-            print(f'Evaluate epoch {epoch} - acc: {np.mean(test_accuracy)} - norm_edit_dis: {np.mean(test_norm_edit_dis)} - cer: {np.mean(test_cer)}\n')
-            
+                if self.lr_scheduler != None:
+                    self.lr_scheduler.step(self.accuracy)
+                
+                # Logger
+                # self.write_eval_metric_to_tensorboard(epoch, metric)
+
+                with open(f'{os.path.join(self.log_folder, "train_log.txt")}', 'a') as fin:
+                    fin.write(f'[Evaluate epoch {epoch}] - acc: {np.mean(test_accuracy)} - norm_edit_dis: {np.mean(test_norm_edit_dis)} - cer: {np.mean(test_cer)}\n----------------------------------------------------------------------\n')
+                print(f'[Evaluate epoch {epoch}] - acc: {np.mean(test_accuracy)} - norm_edit_dis: {np.mean(test_norm_edit_dis)} - cer: {np.mean(test_cer)}\n')
+
+
+
+
             # train
             self.model.train()
             torch.autograd.set_detect_anomaly(True)
             with tqdm.tqdm(self.train_loader, unit="it") as pbar:
                 pbar.set_description(f'Epoch {epoch}')
+                loss_total = 0
                 for batch_idx, batch in enumerate(pbar):
 
                     # perform training step
                     loss = self.train_step(batch, batch_idx)
+                    loss_total += loss
                     pbar.set_postfix(loss=float(loss))
 
                     # log
                     self.epoch = epoch
                     self.iteration += 1
                     if self.iteration % self.args.log_iter == 0:
-                        self.write_train_metric_to_tensorboard(loss)
+                        self.write_train_metric_to_tensorboard(loss_total/batch_idx)
 
-            # save checkpoint
-            # if self.accuracy < np.mean(test_accuracy):
-            if self.norm_edit_dis < np.mean(test_norm_edit_dis):
-                self.accuracy = np.mean(test_accuracy)
-                self.norm_edit_dis = np.mean(test_norm_edit_dis)
-                self.cer = np.mean(test_cer)
-                self.save_checkpoint()
+                if epoch % 1 == 0:
+                # Logger
+                    with open(f'{os.path.join(self.log_folder, "train_log.txt")}', 'a') as fin:
+                        fin.write(f'[Train epoch {epoch}] - loss: {loss_total/batch_idx} \n')
 
-            if self.lr_scheduler != None:
-                self.lr_scheduler.step(self.accuracy)
+
         
     def fit(self):
         try:

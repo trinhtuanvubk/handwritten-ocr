@@ -108,18 +108,18 @@ def create_lmdb_data(args):
             # 'label_folder': './data/pretrain/labels_hw4'},
             # {'image_folder': './data/pretrain/images_hw_normal',
             # 'label_folder': './data/pretrain/labels_hw_normal'}
-            {'image_folder': './data/kalapa_fix/train/images',
-            'label_folder': './data/kalapa_fix/train/labels'}
+            {'image_folder': './data/kalapa_fix/train_aug/images',
+            'label_folder': './data/kalapa_fix/train_aug/labels'}
         ]
 
         val_paths = [
             {'image_folder': './data/kalapa_fix/val/images',
             'label_folder': './data/kalapa_fix/val/labels'}]
-        # paths = train_paths
-        paths = val_paths
+        paths = train_paths
+        # paths = val_paths
         # Đường dẫn đến file LMDB sẽ được tạo
         # lmdb_path = "./ocr_reg_lmdb/train/"
-        lmdb_path = "./data/kalapa_lmdb_fix/val/"
+        lmdb_path = "./data/kalapa_lmdb_fix/train_aug/"
         os.makedirs(lmdb_path, exist_ok=True)
         # Mở file LMDB để ghi dữ liệu
         env = lmdb.open(lmdb_path, map_size=int(1e12))
