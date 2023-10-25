@@ -102,7 +102,11 @@ class Trainer:
                     test_norm_edit_dis.append(float(metric['norm_edit_dis']))
                     test_cer.append(float(metric['cer_score']))
                     pbar.set_postfix(accuracy=float(metric['acc']))
-            self.write_eval_metric_to_tensorboard(epoch, metric)
+            # self.write_eval_metric_to_tensorboard(epoch, metric)
+
+            with open(f'{os.path.join(self.log_folder, "train_log.txt")}', 'a') as fin:
+                fin.write(f'Evaluate epoch {epoch} - acc: {np.mean(test_accuracy)} - norm_edit_dis: {np.mean(test_norm_edit_dis)} - cer: {np.mean(test_cer)}\n')
+            print(f'Evaluate epoch {epoch} - acc: {np.mean(test_accuracy)} - norm_edit_dis: {np.mean(test_norm_edit_dis)} - cer: {np.mean(test_cer)}\n')
             
             # train
             self.model.train()
@@ -143,12 +147,12 @@ class Trainer:
         torch.nn.utils.clip_grad_norm_(self.model.parameters(), self.args.clip_grad_norm)
     
     def write_eval_metric_to_tensorboard(self, epoch, metrics):
-        accuracy = metrics['acc']
-        norm_edit_dis = metrics['norm_edit_dis']
+        self.accuracy = metrics['acc']
+        self.norm_edit_dis = metrics['norm_edit_dis']
         cer = metrics['cer_score']
         with open(f'{os.path.join(self.log_folder, "train_log.txt")}', 'a') as fin:
-            fin.write(f'Evaluate epoch {epoch} - acc: {accuracy} - norm_edit_dis: {norm_edit_dis} - cer: {cer}\n')
-        print(f'Evaluate epoch {epoch} - acc: {accuracy} - norm_edit_dis: {norm_edit_dis} - cer: {cer}\n')
+            fin.write(f'Evaluate epoch {epoch} - acc: {self.accuracy} - norm_edit_dis: {self.norm_edit_dis} - cer: {cer}\n')
+        print(f'Evaluate epoch {epoch} - acc: {self.accuracy} - norm_edit_dis: {self.norm_edit_dis} - cer: {cer}\n')
 
         # write to tensorboard
         self.writer.add_scalars('validation metric', metrics, epoch)

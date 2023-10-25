@@ -27,12 +27,12 @@ from torchvision.transforms import Compose
 class RecAug(object):
     def __init__(self,
                  tia_prob=0.4,
-                 crop_prob=0.4,
-                 reverse_prob=0.4,
+                 crop_prob=0.6,
+                 reverse_prob=0.2,
                  noise_prob=0.4,
-                 jitter_prob=0.4,
-                 blur_prob=0.4,
-                 hsv_aug_prob=0.4,
+                 jitter_prob=0.6,
+                 blur_prob=0.6,
+                 hsv_aug_prob=0.6,
                  **kwargs):
         self.tia_prob = tia_prob
         self.bda = BaseDataAugmentation(crop_prob, reverse_prob, noise_prob,
