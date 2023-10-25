@@ -33,7 +33,7 @@ def get_args():
     parser.add_argument('--num_worker', type=int, default=16)
     parser.add_argument('--shuffle', action='store_false')
 
-    parser.add_argument('--image_test_path', type=str, default='/home/sangdt/research/voice/svtr-pytorch/data/vn_handwritten_images/data/1.jpg')
+    parser.add_argument('--image_test_path', type=str, default='./data/OCR/public_test/images/101/5.jpg')
     args = parser.parse_args()
 
     args.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')

@@ -7,7 +7,11 @@ import time
 import glob
 import csv
 
-
+beam_decoder = nnet.BeamCTCDecoder(nnet.vi_dict, lm_path='nnet/ngram/address_l.arpa',
+                                 alpha=0, beta=0,
+                                 cutoff_top_n=40, cutoff_prob=1.0,
+                                 beam_width=5, num_processes=16,
+                                 blank_index=0)
 
 def submission_one_sample(args):
     imgC, imgH, imgW = (3,48,720)
@@ -41,8 +45,8 @@ def submission_one_sample(args):
     return postprocessed_output
 
 
-def submission(args):
-    with open('/home/sangdt/research/voice/svtr-pytorch/data/OCR/2510_0.csv', 'a+') as f:
+def submission(args, use_lm=True):
+    with open('/home/sangdt/research/voice/svtr-pytorch/data/OCR/2510_ngram.csv', 'a+') as f:
         writer = csv.writer(f,  delimiter=',')
         writer.writerow(["id", "answer"])
 
@@ -50,7 +54,8 @@ def submission(args):
         max_wh_ratio = imgW / imgH
         model = nnet.get_models(args)
         model = model.to(args.device)
-        ckpt_path = "./ckpt/SVTR_kalapa2110/checkpoints/SVTR.ckpt"
+        # ckpt_path = "./ckpt/SVTR_kalapa2110/checkpoints/SVTR.ckpt"
+        ckpt_path = "./ckpt/best_2510/kala_lmdb_fix_aug_2410/checkpoints/SVTR.ckpt"
         checkpoint = torch.load(ckpt_path, map_location=args.device)
         model.load_state_dict(checkpoint['model_state_dict'])
         model.eval()
@@ -105,12 +110,29 @@ def submission(args):
 
             output = model(norm_img_torch)[0]
             print(output.shape)
-            # output = [i[0] for i in output]
-            postprocessed_output = postprocess(output.cpu().detach().numpy())
-            print(postprocessed_output)
+            if use_lm:
+                try:
+                    beam_output, _ = beam_decoder.decode(output)
+                    postprocessed_output = [output[0].strip() for output in beam_output]
+                    print(postprocessed_output)
 
-            for i, j in zip(name_batch, postprocessed_output):
-                writer.writerow([i, j[0]])
+                    for i, j in zip(name_batch, postprocessed_output):
+                        print(i, j)
+                        # if not isinstance(j, list):
+                        #     j = [""]
+                        writer.writerow([i, j])
+                except:
+                    print(beam_output)
+
+            # output = [i[0] for i in output]
+            else:
+                postprocessed_output = postprocess(output.cpu().detach().numpy())
+            
+                print(postprocessed_output)
+
+                for i, j in zip(name_batch, postprocessed_output):
+                    print(i)
+                    writer.writerow([i, j[0]])
 
 
     # return postprocessed_output
@@ -119,4 +141,4 @@ def submission(args):
 
 if __name__=="__main__":
     args = get_args()
-    submission(args)
+    submission(args, use_lm=True)
