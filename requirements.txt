@@ -14,3 +14,9 @@ pathlib
 loguru
 glob2
 python-csv
+
+python-Levenshtein==0.12.2
+six==1.16.0
+ctc-segmentation==1.7.1
+# https://github.com/parlance/ctcdecode.git
+https://github.com/kpu/kenlm/archive/master.zip

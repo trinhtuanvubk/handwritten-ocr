@@ -6,6 +6,8 @@ from .pipeline import SVTRArch, PPLCNetV3Arch
 
 from .loss import CTCLoss
 
+from .ngram.decoder import vi_dict, BeamCTCDecoder
+
 def get_models(args):
     try:
         if args.model=='SVTR':

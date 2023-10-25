@@ -3,6 +3,11 @@ import torch
 def get_optimizer(model, args):
     if args.optimizer == 'adamw':
         optimizer = torch.optim.AdamW(model.parameters(), lr=args.learning_rate)
+    elif args.optimizer == 'adadelta':
+        optimizer = torch.optim.Adadelta(model.parameters(), lr=0.01)    
+        
+    elif args.optimizer == 'adam':
+        optimizer = torch.optim.Adam(model.parameters(), lr=args.learning_rate)
     else:
         raise NotImplementedError
     return optimizer

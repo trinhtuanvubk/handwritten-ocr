@@ -123,7 +123,7 @@ class Trainer:
 
             # save checkpoint
             # if self.accuracy < np.mean(test_accuracy):
-            if self.norm_edit_dis < np.mean(test_norm_edit_dis):
+            if (self.norm_edit_dis < np.mean(test_norm_edit_dis)) and (self.accuracy < np.mean(test_accuracy)):
                 self.accuracy = np.mean(test_accuracy)
                 self.norm_edit_dis = np.mean(test_norm_edit_dis)
                 self.cer = np.mean(test_cer)
@@ -180,14 +180,14 @@ class Trainer:
             self.model.load_state_dict(checkpoint['model_state_dict'])
             self.epoch = checkpoint['epoch']
             self.iteration = checkpoint['iteration']
-            try:
-                self.accuracy = checkpoint['accuracy']
-                self.self.cer = checkpoint['cer']
-                self.norm_edit_dis = checkpoint['norm_edit_dis']
-            except:
-                self.accuracy = 0.
-                self.cer = 0.
-                self.norm_edit_dis = 0.
+            # try:
+            #     self.accuracy = checkpoint['accuracy']
+            #     self.self.cer = checkpoint['cer']
+            #     self.norm_edit_dis = checkpoint['norm_edit_dis']
+            # except:
+            #     self.accuracy = 0.
+            #     self.cer = 0.
+            #     self.norm_edit_dis = 0.
             print(f'Best accuracy: {self.accuracy}')
 
     

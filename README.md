@@ -62,3 +62,4 @@ python3 submission.py
 - See `dataloader/config.yaml` to config augmentation, normalization and preprocessing. 
 - See `utils/args.py` to modify some config
 - Some hard code at set max text length to the last layer in  `nnet/modules/rec_head`
+- https://github.com/kmario23/KenLM-training

@@ -13,7 +13,7 @@ def submission_one_sample(args):
     imgC, imgH, imgW = (3,48,720)
     max_wh_ratio = imgW / imgH
     model = nnet.get_models(args)
-    ckpt_path = "/home/sangdt/research/voice/svtr-pytorch/ckpt/SVTR_kalapa2110/checkpoints/SVTR.ckpt"
+    ckpt_path = "/home/sangdt/research/voice/svtr-pytorch/ckpt/SVTR_kalapa2310/checkpoints/SVTR.ckpt"
     checkpoint = torch.load(ckpt_path, map_location=args.device)
     model.load_state_dict(checkpoint['model_state_dict'])
     model = model.to(args.device)
@@ -42,7 +42,7 @@ def submission_one_sample(args):
 
 
 def submission(args):
-    with open('/home/sangdt/research/voice/svtr-pytorch/data/OCR/2110_0.csv', 'a+') as f:
+    with open('/home/sangdt/research/voice/svtr-pytorch/data/OCR/2510_0.csv', 'a+') as f:
         writer = csv.writer(f,  delimiter=',')
         writer.writerow(["id", "answer"])
 
@@ -104,7 +104,7 @@ def submission(args):
             print(f"normshape: {norm_img_torch.shape}")
 
             output = model(norm_img_torch)[0]
-            # print(output)
+            print(output.shape)
             # output = [i[0] for i in output]
             postprocessed_output = postprocess(output.cpu().detach().numpy())
             print(postprocessed_output)
