@@ -23,6 +23,7 @@ from .rec_img_aug import BaseDataAugmentation, RecAug, RecConAug, RecResizeImg, 
     ABINetRecResizeImg, SVTRRecResizeImg, ABINetRecAug, VLRecResizeImg, SPINRecResizeImg, RobustScannerRecResizeImg, \
     RFLRecResizeImg, SVTRRecAug
 from .label_ops import *
+from .albumaug import Albumentation
 
 def transform(data, ops=None):
     """ transform """
