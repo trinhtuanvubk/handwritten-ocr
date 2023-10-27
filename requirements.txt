@@ -2,6 +2,7 @@ torch==2.0.1
 torchvision==0.15.2
 lmdb
 tqdm
+albumentations
 opencv-python<=4.6.0.66
 opencv-contrib-python<=4.6.0.66
 six
@@ -18,5 +19,6 @@ python-csv
 python-Levenshtein==0.12.2
 six==1.16.0
 ctc-segmentation==1.7.1
+pyctcdecode
 # https://github.com/parlance/ctcdecode.git
 https://github.com/kpu/kenlm/archive/master.zip
