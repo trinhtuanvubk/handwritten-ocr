@@ -62,4 +62,6 @@ python3 submission.py
 - See `dataloader/config.yaml` to config augmentation, normalization and preprocessing. 
 - See `utils/args.py` to modify some config
 - Some hard code at set max text length to the last layer in  `nnet/modules/rec_head`
+- Hard code at `T_max` in cosine lr schedualer
 - https://github.com/kmario23/KenLM-training
+- comment warning in `python3.10/site-packages/pyctcdecode/alphabet.py`
