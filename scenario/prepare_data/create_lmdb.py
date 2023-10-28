@@ -98,28 +98,49 @@ def create_lmdb_data(args):
         # Đường dẫn đến folder chứa các file ảnh và folder label
         # 40k 50k 60k 50k 100k 30k
         train_paths = [
-            # {'image_folder': './data/pretrain/images_hw1',
-            # 'label_folder': './data/pretrain/labels_hw1'},
-            # {'image_folder': './data/pretrain/images_hw2',
-            # 'label_folder': './data/pretrain/labels_hw2'},
-            # {'image_folder': './data/pretrain/images_hw3',
-            # 'label_folder': './data/pretrain/labels_hw3'},
-            # {'image_folder': './data/pretrain/images_hw4',
-            # 'label_folder': './data/pretrain/labels_hw4'},
-            # {'image_folder': './data/pretrain/images_hw_normal',
-            # 'label_folder': './data/pretrain/labels_hw_normal'}
-            {'image_folder': './data/kalapa_fix/train/images',
-            'label_folder': './data/kalapa_fix/train/labels'}
+            # {'image_folder': './data/pretrain_large/images_hw_background',
+            # 'label_folder': './data/pretrain_large/labels_hw_background'},
+            # {'image_folder': './data/pretrain_large/images_hw_background2',
+            # 'label_folder': './data/pretrain_large/labels_hw_background2'},
+            # {'image_folder': './data/pretrain_large/images_hw_added',
+            # 'label_folder': './data/pretrain_large/labels_hw_added'},
+            # {'image_folder': './data/pretrain_large/images_hw_added_acronym',
+            # 'label_folder': './data/pretrain_large/labels_hw_added_acronym'},
+            # {'image_folder': './data/pretrain_large/images_hw_json',
+            # 'label_folder': './data/pretrain_large/labels_hw_json'},
+            # {'image_folder': './data/pretrain_large/images_hw_kalapa',
+            # 'label_folder': './data/pretrain_large/labels_hw_kalapa'},
+            #  {'image_folder': './data/pretrain_large/images_hw_full',
+            # 'label_folder': './data/pretrain_large/labels_hw_full'}
+            {'image_folder': './data/kalapa_fixed_aug/train/images',
+            'label_folder': './data/kalapa_fixed_aug/train/labels'},
+            {'image_folder': './data/kalapa_fixed_aug/train/images_hw_background',
+            'label_folder': './data/kalapa_fixed_aug/train/labels_hw_background'}
         ]
 
         val_paths = [
-            {'image_folder': './data/kalapa_fix/val/images',
-            'label_folder': './data/kalapa_fix/val/labels'}]
+            # {'image_folder': './data/pretrain_large/images_hw_added_eval',
+            # 'label_folder': './data/pretrain_large/labels_hw_added_eval'},
+            # {'image_folder': './data/pretrain_large/images_hw_test',
+            # 'label_folder': './data/pretrain_large/labels_hw_test'},
+            # {'image_folder': './data/pretrain_large/images_hw_background_eval',
+            # 'label_folder': './data/pretrain_large/labels_hw_background_eval'},
+            #  {'image_folder': './data/pretrain_large/images_hw_background_eval2',
+            # 'label_folder': './data/pretrain_large/labels_hw_background_eval2'}
+            # {'image_folder': './data/kalapa_fixed_aug/val/images',
+            # 'label_folder': './data/kalapa_fixed_aug/val/labels'},
+            # {'image_folder': './data/kalapa_fixed_aug/val/images_hw_background_eval',
+            # 'label_folder': './data/kalapa_fixed_aug/val/labels_hw_background_eval'},
+            # {'image_folder': './data/public_test/images_pub',
+            # 'label_folder': './data/public_test/labels_pub'},
+            
+        ]
         # paths = train_paths
         paths = val_paths
         # Đường dẫn đến file LMDB sẽ được tạo
         # lmdb_path = "./ocr_reg_lmdb/train/"
-        lmdb_path = "./data/kalapa_lmdb_fix/val/"
+        # lmdb_path = "./data/kalapa_lmdb_fixed_aug/val/"
+        lmdb_path = "./data/pretrain_lmdb_large_add/val"
         os.makedirs(lmdb_path, exist_ok=True)
         # Mở file LMDB để ghi dữ liệu
         env = lmdb.open(lmdb_path, map_size=int(1e12))
@@ -159,9 +180,9 @@ def create_lmdb_data(args):
                     label_file = image_file[:-4] + ".txt"
                     with open(os.path.join(label_folder, label_file), "r") as f:
                         label = f.read().strip()
-                        if len(label)>=60: 
-                            print(label_file)
-                            continue
+                        # if len(label)>60: 
+                        #     print(label_file)
+                        #     continue
                     # Ghi dữ liệu vào LMDB
                     imageKey = 'image-%09d'.encode() % cnt
                     labelKey = 'label-%09d'.encode() % cnt

@@ -126,8 +126,8 @@ class Trainer:
                         self.write_train_metric_to_tensorboard(loss)
 
             # save checkpoint
-            # if self.accuracy < np.mean(test_accuracy):
-            if (self.norm_edit_dis < np.mean(test_norm_edit_dis)) and (self.accuracy < np.mean(test_accuracy)):
+            if self.accuracy < np.mean(test_accuracy):
+            # if (self.norm_edit_dis < np.mean(test_norm_edit_dis)) and (self.accuracy < np.mean(test_accuracy)):
                 self.accuracy = np.mean(test_accuracy)
                 self.norm_edit_dis = np.mean(test_norm_edit_dis)
                 self.cer = np.mean(test_cer)
