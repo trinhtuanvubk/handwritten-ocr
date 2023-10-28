@@ -65,3 +65,6 @@ python3 submission.py
 - Hard code at `T_max` in cosine lr schedualer
 - https://github.com/kmario23/KenLM-training
 - comment warning in `python3.10/site-packages/pyctcdecode/alphabet.py`
+- https://github.com/onnx/tutorials/issues/63
+
+- change pool function: https://github.com/onnx/tutorials/issues/63, https://github.com/pytorch/pytorch/issues/42653

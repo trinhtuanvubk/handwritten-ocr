@@ -16,11 +16,11 @@ torch.onnx.export(
         model,
         dummy_input,
         'test_onnx.onnx',
-        input_names = ['batch_images'],
-        output_names = ['batch_logits'],
-        dynamic_axes = {'batch_images': {0: 'batch'},
-                        'batch_logits': {0: 'batch'}},
-        opset_version=9,
+        input_names = ['image'],
+        output_names = ['logit'],
+        # dynamic_axes = {'batch_images': {0: 'batch'},
+        #                 'batch_logits': {0: 'batch'}},
+        opset_version=15,
         verbose=True,
-        operator_export_type=torch.onnx.OperatorExportTypes.ONNX_ATEN_FALLBACK
+        # operator_export_type=torch.onnx.OperatorExportTypes.ONNX_ATEN_FALLBACK
     )
