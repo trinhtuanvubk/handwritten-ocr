@@ -11,7 +11,7 @@ vi_dict = ['', 'a', 'A', 'à', 'À', 'ả', 'Ả', 'ã', 'Ã', 'á', 'Á', 'ạ'
 decoder = build_ctcdecoder(
     vi_dict,
     kenlm_model_path='nnet/ngram/address_fix.arpa',  # either .arpa or .bin file
-    alpha=0.0,  # tuned on a val set
+    alpha=0.3,  # tuned on a val set
     beta=2.0,  # tuned on a val set
 )
 
