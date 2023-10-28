@@ -22,3 +22,6 @@ ctc-segmentation==1.7.1
 pyctcdecode
 # https://github.com/parlance/ctcdecode.git
 https://github.com/kpu/kenlm/archive/master.zip
+
+onnxruntime-gpu==1.15.1
+onnx==1.15.0
