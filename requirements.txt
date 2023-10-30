@@ -21,4 +21,4 @@ six==1.16.0
 ctc-segmentation==1.7.1
 pyctcdecode
 # https://github.com/parlance/ctcdecode.git
-https://github.com/kpu/kenlm/archive/master.zip
+# https://github.com/kpu/kenlm/archive/master.zip

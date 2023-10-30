@@ -9,16 +9,16 @@ from .loss import CTCLoss
 from .ngram.decoder import vi_dict, BeamCTCDecoder
 
 def get_models(args):
-    try:
-        if args.model=='SVTR':
-            model = SVTRArch()
-        
-        elif args.model=='LCNETV3':
-            model = PPLCNetV3Arch()
-        
-        return model
-    except:
-        print("Only support SVTR or LCNETV3")
+    # try:
+    if args.model=='SVTR':
+        model = SVTRArch()
+    
+    elif args.model=='LCNETV3':
+        model = PPLCNetV3Arch()
+    
+    return model
+    # except:
+    #     print("Only support SVTR or LCNETV3")
 
 def get_loss(args):
     ctc_loss = CTCLoss(args)

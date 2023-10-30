@@ -1,5 +1,8 @@
 # 
+*.jpg
+*.txt
 ckpt
+Dataset
 data/*
 **/trash*.py
 .vscode/launch.json
@@ -7,6 +10,7 @@ test_shape.py
 **/*gram*.bin
 /ctcdecode/
 /kenlm/
+./Dataset
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
