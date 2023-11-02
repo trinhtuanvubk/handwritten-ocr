@@ -6,7 +6,10 @@ import nnet
 import time
 from utils.util import *
 from utils.args import get_args
+from utils.preprocess import detect_text_lines
 import shutil
+import time
+
 
 def edit_distance(s1, s2):
     m=len(s1)+1
@@ -55,10 +58,13 @@ if __name__ == "__main__":
 
     CER = 0
     acc_true = 0
-
     total_img = 0
+    t_start = time.time()
     for path in tqdm(os.listdir(folder_in)):
         image = cv2.imread(os.path.join(folder_in, path))
+        # preprocess image input
+        image = detect_text_lines(image)
+        
         path_anno = os.path.join(anno_folder_in, os.path.basename(path)[:-4] + '.txt')
         with open(path_anno, 'r') as f:
             for line in f:
@@ -83,5 +89,7 @@ if __name__ == "__main__":
             img_save = f'{str(cer)}=gt={GT}=pre={predict}.jpg'
             cv2.imwrite(os.path.join(folder_checker , img_save), image)
 
-    print('Acc = ', acc_true/total_img, total_img)
+    print("Total image process = ", total_img)
+    print('Time per img = ', (time.time() - t_start)/total_img )
+    print('Acc = ', 100 * acc_true/total_img, " %" )
     print("CER = ", CER/total_img)
