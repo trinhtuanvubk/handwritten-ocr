@@ -508,7 +508,7 @@ class PPLCNetV3(nn.Module):
             x = F.avg_pool2d(x, [3, 2])
         return x
 from nnet.modules.encoder import SequenceEncoder
-from nnet.modules.rec_head import CTCHead
+from nnet.modules.ctc_head import CTCHead
 
 class PPLCNetV3Arch(nn.Module):
     def __init__(self):

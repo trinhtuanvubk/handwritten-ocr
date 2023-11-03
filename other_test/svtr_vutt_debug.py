@@ -595,13 +595,15 @@ class SVTRNet(nn.Module):
         return x
 
 from nnet.modules.encoder import SequenceEncoder
-from nnet.modules.rec_head import CTCHead
+from nnet.modules.ctc_head import CTCHead
+from nnet.modules.sar_head import SARHead
 class SVTRArch(nn.Module):
     def __init__(self):
         super(SVTRArch, self).__init__()
         self.backbone = SVTRNet()
         self.neck = SequenceEncoder(in_channels=192, encoder_type='reshape')
-        self.head = CTCHead(in_channels=192)
+        # self.head = CTCHead(in_channels=192)
+        self.head = SARHead(in_channels=192)
     
     def forward(self, x):
         x = self.backbone(x)

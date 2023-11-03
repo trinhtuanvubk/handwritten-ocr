@@ -5,7 +5,7 @@ from .svtrnet import SVTRNet
 from .lcnetv3 import PPLCNetV3
 
 from .modules.encoder import SequenceEncoder
-from .modules.rec_head import CTCHead
+from .modules.ctc_head import CTCHead
 
 class SVTRArch(nn.Module):
     def __init__(self):
