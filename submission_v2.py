@@ -9,19 +9,23 @@ import csv
 from pyctcdecode import build_ctcdecoder
 import multiprocessing
 
+from utils.preprocess import detect_text_lines
+
 # prepare decoder and decode logits via shallow fusion
 hotwords = ["Đg", "Ng", "ng", "Tdp", "TDP"]
+vi_dict = ['', 'a', 'A', 'à', 'À', 'ả', 'Ả', 'ã', 'Ã', 'á', 'Á', 'ạ', 'Ạ', 'ă', 'Ă', 'ằ', 'Ằ', 'ẳ', 'Ẳ', 'ẵ', 'Ẵ', 'ắ', 'Ắ', 'ặ', 'Ặ', 'â', 'Â', 'ầ', 'Ầ', 'ẩ', 'Ẩ', 'ẫ', 'Ẫ', 'ấ', 'Ấ', 'ậ', 'Ậ', 'b', 'B', 'c', 'C', 'd', 'D', 'đ', 'Đ', 'e', 'E', 'è', 'È', 'ẻ', 'Ẻ', 'ẽ', 'Ẽ', 'é', 'É', 'ẹ', 'Ẹ', 'ê', 'Ê', 'ề', 'Ề', 'ể', 'Ể', 'ễ', 'Ễ', 'ế', 'Ế', 'ệ', 'Ệ', 'f', 'F', 'g', 'G', 'h', 'H', 'i', 'I', 'ì', 'Ì', 'ỉ', 'Ỉ', 'ĩ', 'Ĩ', 'í', 'Í', 'ị', 'Ị', 'j', 'J', 'k', 'K', 'l', 'L', 'm', 'M', 'n', 'N', 'o', 'O', 'ò', 'Ò', 'ỏ', 'Ỏ', 'õ', 'Õ', 'ó', 'Ó', 'ọ', 'Ọ', 'ô', 'Ô', 'ồ', 'Ồ', 'ổ', 'Ổ', 'ỗ', 'Ỗ', 'ố', 'Ố', 'ộ', 'Ộ', 'ơ', 'Ơ', 'ờ', 'Ờ', 'ở', 'Ở', 'ỡ', 'Ỡ', 'ớ', 'Ớ', 'ợ', 'Ợ', 'p', 'P', 'q', 'Q', 'r', 'R', 's', 'S', 't', 'T', 'u', 'U', 'ù', 'Ù', 'ủ', 'Ủ', 'ũ', 'Ũ', 'ú', 'Ú', 'ụ', 'Ụ', 'ư', 'Ư', 'ừ', 'Ừ', 'ử', 'Ử', 'ữ', 'Ữ', 'ứ', 'Ứ', 'ự', 'Ự', 'v', 'V', 'w', 'W', 'x', 'X', 'y', 'Y', 'ỳ', 'Ỳ', 'ỷ', 'Ỷ', 'ỹ', 'Ỹ', 'ý', 'Ý', 'ỵ', 'Ỵ', 'z', 'Z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '!', '"', '#', '$', '%', '&', "'", "'", '(', ')', '*', '+', ',', '-', '.', '/', ':', ';', '<', '=', '>', '?', '@', '[', '\\', ']', '^', '_', '`', '{', '|', '}', '~', ' ', ' ']
+
 decoder = build_ctcdecoder(
-    nnet.vi_dict,
-    kenlm_model_path='nnet/ngram/address_fix.arpa',  # either .arpa or .bin file
+    vi_dict,
+    kenlm_model_path='nnet/ngram/address_fix_211.binary',  # either .arpa or .bin file
     alpha=0.3,  # tuned on a val set
     beta=2.0,  # tuned on a val set
-    hotwords = hotwords,
-    hotword_weight=5.0,
+    # hotwords = hotwords,
+    # hotword_weight=5.0,
 )
 
 def submission(args, use_lm=True):
-    with open('/home/sangdt/research/voice/svtr-pytorch/data/OCR/2510_ngram_2.csv', 'a+') as f:
+    with open('./311_ngram_sort_width_2.csv', 'a+') as f:
         writer = csv.writer(f,  delimiter=',')
         writer.writerow(["id", "answer"])
 
@@ -30,7 +34,7 @@ def submission(args, use_lm=True):
         model = nnet.get_models(args)
         model = model.to(args.device)
         # ckpt_path = "./ckpt/SVTR_kalapa2110/checkpoints/SVTR.ckpt"
-        ckpt_path = "./ckpt/best_2510/kala_lmdb_fix_aug_2410/checkpoints/SVTR.ckpt"
+        ckpt_path = "./ckpt/SVTR_kalapa_3110/checkpoints/SVTR.ckpt"
         checkpoint = torch.load(ckpt_path, map_location=args.device)
         model.load_state_dict(checkpoint['model_state_dict'])
         model.eval()
@@ -39,11 +43,9 @@ def submission(args, use_lm=True):
         start = time.time()
 
         norm_img_batch = []
-        all_folder = os.listdir("./data/OCR/public_test/images/")
-        
 
         # Get a list of all subfolders
-        subfolders = glob.glob("./data/OCR/public_test/images/*")
+        subfolders = glob.glob("./data/public_test/images/*")
 
         # Get a list of all images in all subfolders
         image_path = []
@@ -51,9 +53,19 @@ def submission(args, use_lm=True):
         for subfolder in subfolders:
             image_path += glob.glob(subfolder + "/*.*")
         for i in image_path:
+            print(i)
             image = cv2.imread(i)
-            images.append({'image_name': "/".join(i.rsplit("/", 2)[-2:]), 'image': image})
+            image_name =  "/".join(i.rsplit("/", 2)[-2:])
+            image = detect_text_lines(image)
+            if image is None:
+                writer.writerow([image_name, ""])
+                continue
+            os.makedirs("./test_detect_line", exist_ok=True)
+            cv2.imwrite(os.path.join("./test_detect_line", i.split("/", 4)[-1].replace("/","_")), image)
+            images.append({'image_name': image_name, 'image': image})
 
+        
+'''
         # print(images)
         img_num = len(images)
         idx = 0
@@ -90,7 +102,7 @@ def submission(args, use_lm=True):
                     with multiprocessing.get_context("fork").Pool() as pool:
                         postprocessed_output = decoder.decode_batch(pool, output.cpu().detach().numpy())
                     # postprocessed_output = decoder.decode(output[0].cpu().detach().numpy())
-                    postprocessed_output = [i.replace('blank',"") for i in postprocessed_output]
+                    postprocessed_output = [i.replace("  "," ") for i in postprocessed_output]
                     print(postprocessed_output)
 
                     for i, j in zip(name_batch, postprocessed_output):
@@ -114,8 +126,12 @@ def submission(args, use_lm=True):
 
     # return postprocessed_output
 
-
+    '''
+    
 
 if __name__=="__main__":
     args = get_args()
+    args.device = torch.device("cuda")
     submission(args, use_lm=True)
+
+

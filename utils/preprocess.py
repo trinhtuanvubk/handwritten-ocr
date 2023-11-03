@@ -98,22 +98,64 @@ def detect_text_lines(img):
         # Draw rectangle around contour on original image
         # cv2.rectangle(img_ori, (x, y), (x + w, y + h), (255, 0, 255), 2)
 
-    box_contour_list = sorted(box_contour_list, key=lambda box: box[1])   # sort top to botton
+    if len(box_contour_list)==0:
+        return None
+    
+    # Sort via height =============
+    # box_contour_list = sorted(box_contour_list, key=lambda box: box[1])   # sort top to botton
+    # merge_box_lines = []
+    # current_line = [box_contour_list[0]]
+
+    # for box in box_contour_list[1:]:
+    #     current_line_left, current_line_bottom, w_, h_ = current_line[-1]
+    #     top = box[1]
+    #     left = box[0]
+
+    #     # Merge boxes that are vertically aligned (i.e., their y-coordinates overlap)
+    #      # You might want to adjust the threshold here
+    #     if (abs(top - current_line_bottom)  <=  0.15 * H_img) :
+    #                 # and (abs(left - (current_line_left + w_)) <= 0.15 * W_img):
+    #         current_line.append(box)
+    #     else:
+    #         merge_box_lines.append(current_line)
+    #         current_line = [box]
+
+    # merge_box_lines.append(current_line)
+    # ================================
+
+    # Sort via width ==============
+    box_contour_list = sorted(box_contour_list, key=lambda box: box[0])   # sort top to botton
+    # max_width_ele = max([(box[3]-box[0]) for box in box_contour_list])
     merge_box_lines = []
     current_line = [box_contour_list[0]]
 
     for box in box_contour_list[1:]:
-        _, current_line_bottom, _, _ = current_line[-1]
-        top = box[1]
+        current_line_left, current_line_top, current_line_right, current_line_bottom = current_line[-1]
+        left, top , right, bottom = box
 
-        # Merge boxes that are vertically aligned (i.e., their y-coordinates overlap)
-        if abs(top - current_line_bottom)  <=  0.15 * H_img:  # You might want to adjust the threshold here
+        # You might want to adjust the threshold here
+        if (abs(left - current_line_right) <= 0.15 * W_img) and \
+            (bottom >= current_line_top):
             current_line.append(box)
         else:
-            merge_box_lines.append(current_line)
-            current_line = [box]
+            # In this kalapa challenge: just have only one sentence
+            continue
+        # else:
+        #     merge_box_lines.append(current_line)
+        #     current_line = [box]
 
     merge_box_lines.append(current_line)
+    # ================================
+
+    # Sort and only check the last
+    # box_contour_list = sorted(box_contour_list, key=lambda box: box[0]) 
+    # merge_box_lines = []
+    # last_line_left, _, last_line_right, _ = box_contour_list[-1]
+    # second_last_line_left, _, second_last_line_right, _ = box_contour_list[-2]
+    # if (abs(last_line_left - second_last_line_right) <= 0.15 * W_img):
+    #     merge_box_lines.append(box_contour_list)
+    # else:
+    #     merge_box_lines.append(box_contour_list[:-1])
 
     boxes_final = []
 
@@ -137,13 +179,16 @@ def detect_text_lines(img):
             box_height = max_y - min_y
 
             # Extend the box by 20%
-            extend_width = box_width * 0.1
-            extend_height = box_height * 0.5
+            extend_width_left = box_width * 0.2
+            extend_width_right = box_width * 0.1
+            extend_height = box_height * 1
 
             # Update the coordinates with the extensions while ensuring they are within the image bounds
-            min_x = max(0, int(min_x - extend_width // 2))
-            min_y = max(0, int(min_y - extend_height // 2))
-            max_x = min(W_img, int(max_x + extend_width // 2))
+            # min_x = max(0, int(min_x - extend_width_left // 2))
+            min_x = 0
+            # min_y = max(0, int(min_y - extend_height // 2))
+            min_y = 0
+            max_x = min(W_img, int(max_x + extend_width_right // 2))
             max_y = min(H_img, int(max_y + extend_height // 2))
 
             # boxes_final.append([int(min_x), int(min_y), int(max_x), int(max_y)])   # format xmin ymin xmax ymax
@@ -152,27 +197,28 @@ def detect_text_lines(img):
     else:
         result_img = img_ori
     # Return the img line croped or img origin
+    # return result_img
     return result_img
 
 
 
-if __name__ == "__main__":
+# if __name__ == "__main__":
 
-    folder_out = "Dataset/debug"
-    folder_in  = "/home/sonlt373/Desktop/SoNg/OCR_handwriting_shop_sticker/dev/handwritten-ocr/Dataset/checker"
-    for path in os.listdir(folder_in):
-        img_path = os.path.join(folder_in, path)
-        img = cv2.imread(img_path)
+#     folder_out = "Dataset/debug"
+#     folder_in  = "/home/sonlt373/Desktop/SoNg/OCR_handwriting_shop_sticker/dev/handwritten-ocr/Dataset/checker"
+#     for path in os.listdir(folder_in):
+#         img_path = os.path.join(folder_in, path)
+#         img = cv2.imread(img_path)
 
-        t0 = time.time()
+#         t0 = time.time()
 
-        processed_img = detect_text_lines(img)
+#         processed_img = detect_text_lines(img)
 
-        # Show the image with detected text lines
-        # cv2.imshow('Detected Text Lines', processed_img)
-        # cv2.waitKey(0)
-        # cv2.destroyAllWindows()
-        print('[time perimg]=====>', time.time() - t0, "(s)")
-        # Save the image with detected text lines
-        cv2.imwrite(os.path.join(folder_out, path), processed_img)
-        # break
+#         # Show the image with detected text lines
+#         # cv2.imshow('Detected Text Lines', processed_img)
+#         # cv2.waitKey(0)
+#         # cv2.destroyAllWindows()
+#         print('[time perimg]=====>', time.time() - t0, "(s)")
+#         # Save the image with detected text lines
+#         cv2.imwrite(os.path.join(folder_out, path), processed_img)
+#         # break
