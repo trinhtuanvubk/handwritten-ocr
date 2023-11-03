@@ -179,15 +179,15 @@ def detect_text_lines(img):
             box_height = max_y - min_y
 
             # Extend the box by 20%
-            extend_width_left = box_width * 0.2
+            extend_width_left = box_width * 0.1
             extend_width_right = box_width * 0.1
             extend_height = box_height * 1
 
             # Update the coordinates with the extensions while ensuring they are within the image bounds
-            # min_x = max(0, int(min_x - extend_width_left // 2))
-            min_x = 0
-            # min_y = max(0, int(min_y - extend_height // 2))
-            min_y = 0
+            min_x = max(0, int(min_x - extend_width_left))
+            # min_x = 0
+            min_y = max(0, int(min_y - extend_height // 2))
+            # min_y = 0
             max_x = min(W_img, int(max_x + extend_width_right // 2))
             max_y = min(H_img, int(max_y + extend_height // 2))
 
