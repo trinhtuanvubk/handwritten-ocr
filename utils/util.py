@@ -195,6 +195,38 @@ def resize_norm_img(img, max_wh_ratio):
     # print(padding_im.shape)
     return padding_im
 
+
+def resize_norm_img_cut(img, max_wh_ratio):
+
+    imgC, imgH, imgW = (3,48,720)
+    assert imgC == img.shape[2]
+    imgW = int((imgH * max_wh_ratio))
+    # imgW = imgH * img.shape[1] / img.shape[0]
+    # if self.use_onnx:
+    #     w = self.input_tensor.shape[3:][0]
+    #     if isinstance(w, str):
+    #         pass
+    #     elif w is not None and w > 0:
+    #         imgW = w
+    h, w = img.shape[:2]
+    ratio = w / float(h)
+    if math.ceil(imgH * ratio) > imgW:
+        # print("real shape is larger")
+        resized_w = imgW
+    else:
+        resized_w = int(math.ceil(imgH * ratio))
+        # print("model shape is larger")
+    resized_image = cv2.resize(img, (resized_w, imgH))
+    resized_image = resized_image.astype('float32')
+    resized_image = resized_image.transpose((2, 0, 1)) / 255
+    resized_image -= 0.5
+    resized_image /= 0.5
+    padding_im = np.zeros((imgC, imgH, imgW), dtype=np.float32)
+    # padding_im = -1.0 * np.ones((imgC, imgH, imgW), dtype=np.float32)
+    padding_im[:, :, 0:resized_w] = resized_image
+    # print(padding_im.shape)
+    return padding_im
+
 def check_file(path:str, extention_task = None):
     name = path.split(".")[-2]
     new_name = name

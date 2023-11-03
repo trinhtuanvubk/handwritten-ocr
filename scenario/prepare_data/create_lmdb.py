@@ -100,22 +100,25 @@ def create_lmdb_data(args):
         train_paths = [
             # {'image_folder': './data/pretrain_large/images_hw_background',
             # 'label_folder': './data/pretrain_large/labels_hw_background'},
-            # {'image_folder': './data/pretrain_large/images_hw_background2',
-            # 'label_folder': './data/pretrain_large/labels_hw_background2'},
+            {'image_folder': './data/pretrain_large/images_hw_background2',
+            'label_folder': './data/pretrain_large/labels_hw_background2'},
             # {'image_folder': './data/pretrain_large/images_hw_added',
             # 'label_folder': './data/pretrain_large/labels_hw_added'},
             # {'image_folder': './data/pretrain_large/images_hw_added_acronym',
             # 'label_folder': './data/pretrain_large/labels_hw_added_acronym'},
+              {'image_folder': './data/pretrain_large/images_hw_acronym2',
+            'label_folder': './data/pretrain_large/labels_hw_acronym2'},
             # {'image_folder': './data/pretrain_large/images_hw_json',
             # 'label_folder': './data/pretrain_large/labels_hw_json'},
             # {'image_folder': './data/pretrain_large/images_hw_kalapa',
             # 'label_folder': './data/pretrain_large/labels_hw_kalapa'},
             #  {'image_folder': './data/pretrain_large/images_hw_full',
             # 'label_folder': './data/pretrain_large/labels_hw_full'}
-            {'image_folder': './data/kalapa_fixed_aug/train/images',
-            'label_folder': './data/kalapa_fixed_aug/train/labels'},
-            {'image_folder': './data/kalapa_fixed_aug/train/images_hw_background',
-            'label_folder': './data/kalapa_fixed_aug/train/labels_hw_background'}
+            # {'image_folder': './data/kalapa_fixed_aug/train/images',
+            # 'label_folder': './data/kalapa_fixed_aug/train/labels'},
+            # {'image_folder': './data/kalapa_fixed_aug/train/images_hw_background',
+            # 'label_folder': './data/kalapa_fixed_aug/train/labels_hw_background'},
+            
         ]
 
         val_paths = [
@@ -125,8 +128,10 @@ def create_lmdb_data(args):
             # 'label_folder': './data/pretrain_large/labels_hw_test'},
             # {'image_folder': './data/pretrain_large/images_hw_background_eval',
             # 'label_folder': './data/pretrain_large/labels_hw_background_eval'},
-            #  {'image_folder': './data/pretrain_large/images_hw_background_eval2',
-            # 'label_folder': './data/pretrain_large/labels_hw_background_eval2'}
+             {'image_folder': './data/pretrain_large/images_hw_background_eval2',
+            'label_folder': './data/pretrain_large/labels_hw_background_eval2'},
+            {'image_folder': './data/pretrain_large/images_hw_acronym2_eval',
+            'label_folder': './data/pretrain_large/labels_hw_acronym2_eval'}
             # {'image_folder': './data/kalapa_fixed_aug/val/images',
             # 'label_folder': './data/kalapa_fixed_aug/val/labels'},
             # {'image_folder': './data/kalapa_fixed_aug/val/images_hw_background_eval',
@@ -136,11 +141,11 @@ def create_lmdb_data(args):
             
         ]
         # paths = train_paths
-        paths = val_paths
+        paths = train_paths
         # Đường dẫn đến file LMDB sẽ được tạo
         # lmdb_path = "./ocr_reg_lmdb/train/"
-        # lmdb_path = "./data/kalapa_lmdb_fixed_aug/val/"
-        lmdb_path = "./data/pretrain_lmdb_large_add/val"
+        # lmdb_path = "./data/kalapa_lmdb_fixed_aug/val"
+        lmdb_path = "./data/pretrain_lmdb_2/train"
         os.makedirs(lmdb_path, exist_ok=True)
         # Mở file LMDB để ghi dữ liệu
         env = lmdb.open(lmdb_path, map_size=int(1e12))

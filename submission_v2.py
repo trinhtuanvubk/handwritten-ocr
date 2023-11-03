@@ -17,13 +17,13 @@ decoder = build_ctcdecoder(
     vi_dict,
     kenlm_model_path='nnet/ngram/address_fix.arpa',  # either .arpa or .bin file
     # unigrams=hotwords,
-    alpha=0.3,  # tuned on a val set
-    beta=2.0,  # tuned on a val set
+    alpha=0.4,  # tuned on a val set
+    beta=1.5,  # tuned on a val set
 )
 # Note: best submission: alpha 0.3, beta 2, beamwidth=100 default, no hotwords, address_fix.arpa)
 
 def submission(args, use_lm=True):
-    with open('./best_check.csv', 'a+') as f:
+    with open('./111_ngram_2.csv', 'a+') as f:
         writer = csv.writer(f,  delimiter=',')
         writer.writerow(["id", "answer"])
 
@@ -32,8 +32,8 @@ def submission(args, use_lm=True):
         model = nnet.get_models(args)
         model = model.to(args.device)
         # ckpt_path = "./ckpt/SVTR_kalapa2110/checkpoints/SVTR.ckpt"
-        ckpt_path = "./ckpt/kala_lmdb_fix_aug_2410/checkpoints/SVTR.ckpt"
-        # ckpt_path = "./ckpt/SVTR_kalapa_2710/checkpoints/SVTR.ckpt"
+        # ckpt_path = "./ckpt/kala_lmdb_fix_aug_2410/checkpoints/SVTR.ckpt"
+        ckpt_path = "./ckpt/SVTR_kalapa_3110/checkpoints/SVTR.ckpt"
         checkpoint = torch.load(ckpt_path, map_location=args.device)
         model.load_state_dict(checkpoint['model_state_dict'])
         model.eval()
@@ -99,6 +99,9 @@ def submission(args, use_lm=True):
                                         # hotword_weight=10.0,)
                     # postprocessed_output = decoder.decode(output[0].cpu().detach().numpy())
                     postprocessed_output = [i.replace("  "," ") for i in postprocessed_output]
+                    postprocessed_output = [i.replace("uỵ","ụy").replace("uỷ", "ủy").replace("uý", "úy") for i in postprocessed_output]
+                    # postprocessed_output = [i.replace("Tp","Tp ").replace("Kp", "Kp ") for i in postprocessed_output]
+                    # postprocessed_output = [i.replace("  "," ") for i in postprocessed_output]
                     print(postprocessed_output)
 
                     for i, j in zip(name_batch, postprocessed_output):
