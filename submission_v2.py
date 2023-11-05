@@ -45,7 +45,8 @@ def submission(args, use_lm=True):
         norm_img_batch = []
 
         # Get a list of all subfolders
-        subfolders = glob.glob("./data/public_test/images/*")
+        # subfolders = glob.glob("./data/public_test/images/*")
+        subfolders = glob.glob("./data/kalapa_fixed_raw/train/images_note")
 
         # Get a list of all images in all subfolders
         image_path = []

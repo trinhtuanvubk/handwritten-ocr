@@ -1,6 +1,8 @@
 # 
 *.jpg
 *.txt
+*.csv
+*test*
 ckpt
 Dataset
 data/*
