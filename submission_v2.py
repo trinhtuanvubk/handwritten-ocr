@@ -17,15 +17,22 @@ vi_dict = ['', 'a', 'A', 'à', 'À', 'ả', 'Ả', 'ã', 'Ã', 'á', 'Á', 'ạ'
 
 decoder = build_ctcdecoder(
     vi_dict,
-    kenlm_model_path='nnet/ngram/address_fix_211.binary',  # either .arpa or .bin file
+    kenlm_model_path='nnet/ngram/address_fix.arpa',  # either .arpa or .bin file
+    # kenlm_model_path=None,
     alpha=0.3,  # tuned on a val set
     beta=2.0,  # tuned on a val set
     # hotwords = hotwords,
     # hotword_weight=5.0,
 )
 
+def check_num(word:str):
+    for i in word:
+        if i.isdigit():
+            return True
+    return False
+
 def submission(args, use_lm=True):
-    with open('./311_ngram_sort_width_2.csv', 'a+') as f:
+    with open('./811_Son_both.csv', 'a+') as f:
         writer = csv.writer(f,  delimiter=',')
         writer.writerow(["id", "answer"])
 
@@ -34,7 +41,8 @@ def submission(args, use_lm=True):
         model = nnet.get_models(args)
         model = model.to(args.device)
         # ckpt_path = "./ckpt/SVTR_kalapa2110/checkpoints/SVTR.ckpt"
-        ckpt_path = "./ckpt/SVTR_kalapa_3110/checkpoints/SVTR.ckpt"
+        # ckpt_path = "./ckpt/SVTR_kalapa_611/checkpoints/SVTR.ckpt"
+        ckpt_path = "./ckpt/SVTR_711_Son/SVTR_0811_0.92.ckpt"
         checkpoint = torch.load(ckpt_path, map_location=args.device)
         model.load_state_dict(checkpoint['model_state_dict'])
         model.eval()
@@ -45,8 +53,8 @@ def submission(args, use_lm=True):
         norm_img_batch = []
 
         # Get a list of all subfolders
-        # subfolders = glob.glob("./data/public_test/images/*")
-        subfolders = glob.glob("./data/kalapa_fixed_raw/train/images_note")
+        subfolders = glob.glob("./data/public_test/images/*")
+        # subfolders = glob.glob("./data/kalapa_fixed_raw/train/images_note")
 
         # Get a list of all images in all subfolders
         image_path = []
@@ -66,11 +74,11 @@ def submission(args, use_lm=True):
             images.append({'image_name': image_name, 'image': image})
 
         
-'''
+
         # print(images)
         img_num = len(images)
         idx = 0
-        batch_num = 6
+        batch_num = 1
         for beg_img_no in range(0, img_num, batch_num):
             end_img_no = min(img_num, beg_img_no + batch_num)
             norm_img_batch = []
@@ -98,12 +106,14 @@ def submission(args, use_lm=True):
             output = model(norm_img_torch)[0]
             print(output.shape)
             print(output)
-            if use_lm:
+            if args.decode_type == use_lm:
                 try:
                     with multiprocessing.get_context("fork").Pool() as pool:
                         postprocessed_output = decoder.decode_batch(pool, output.cpu().detach().numpy())
+                                                                    # beam_prune_logp=-15,
+                                                                    # token_min_logp=-7)
                     # postprocessed_output = decoder.decode(output[0].cpu().detach().numpy())
-                    postprocessed_output = [i.replace("  "," ") for i in postprocessed_output]
+                    postprocessed_output = [i.replace("  "," ").replace("uỵ", "ụy") for i in postprocessed_output]
                     print(postprocessed_output)
 
                     for i, j in zip(name_batch, postprocessed_output):
@@ -115,7 +125,7 @@ def submission(args, use_lm=True):
                     print("hihi")
 
             # output = [i[0] for i in output]
-            else:
+            elif args.decode_type=="nolm":
                 postprocessed_output = postprocess(output.cpu().detach().numpy())
             
                 print(postprocessed_output)
@@ -123,16 +133,47 @@ def submission(args, use_lm=True):
                 for i, j in zip(name_batch, postprocessed_output):
                     print(i)
                     writer.writerow([i, j[0]])
+            elif args.decode_type=="both":
+                batch_last_output = []
+                # do lm first
+                with multiprocessing.get_context("fork").Pool() as pool:
+                    batch_lm_output = decoder.decode_batch(pool, output.cpu().detach().numpy())
+                                                                    # beam_prune_logp=-15,
+                                                                    # token_min_logp=-7)
+                    # postprocessed_output = decoder.decode(output[0].cpu().detach().numpy())
+                    batch_lm_output = [i.replace("  "," ").replace("uỵ", "ụy") for i in batch_lm_output]
 
+                #  do normal
+                batch_nolm_output = postprocess(output.cpu().detach().numpy())
+                batch_nolm_output = [i[0] for i in batch_nolm_output]
+
+                # print(batch_nolm_output)
+                for lm_output, nolm_output in zip(batch_lm_output, batch_nolm_output):
+
+                    if len(lm_output.split(" ")) != len(nolm_output.split(" ")):
+                        last_output = lm_output
+                    else:
+                        last_output = lm_output
+                        for lm_word, nolm_word in zip(lm_output.split(" "), nolm_output.split(" ")):
+                            if check_num(lm_word):
+                                last_output.replace(lm_word, nolm_word)
+                    batch_last_output.append(last_output)
+
+                for i, j in zip(name_batch, batch_last_output):
+                    print(i)
+                    writer.writerow([i, j])
+
+            
 
     # return postprocessed_output
 
-    '''
+    
     
 
 if __name__=="__main__":
     args = get_args()
-    args.device = torch.device("cuda")
-    submission(args, use_lm=True)
+    args.device = torch.device("cpu")
+    args.decode_type = "both"
+    submission(args, use_lm=False)
 
 
