@@ -6,11 +6,12 @@ import math
 
 def truncated_normal_(tensor,mean=0,std=0.02):
     with torch.no_grad():
+        device = torch.device(tensor.device)
         size = tensor.size()
-        tmp = tensor.new_empty(size+(4,)).normal_().cuda()
+        tmp = tensor.new_empty(size+(4,)).normal_().to(device)
         valid = (tmp < 2) & (tmp > -2)
         ind = valid.max(-1, keepdim=True)[1]
-        tensor.data.copy_(tmp.gather(-1, ind.cuda()).squeeze(-1))
+        tensor.data.copy_(tmp.gather(-1, ind.to(device)).squeeze(-1))
         tensor.data.mul_(std).add_(mean)
         return tensor
 
@@ -19,9 +20,9 @@ def drop_path(x, drop_prob=0., training=False):
     if drop_prob == 0. or not training:
         return x
 
-    keep_prob = torch.tensor(1-drop_prob).cuda()
+    keep_prob = torch.tensor(1-drop_prob, dtype=x.dtype)
     shape = (x.size()[0], ) + (1, ) * (x.ndim - 1)
-    random_tensor = keep_prob + torch.rand(shape, dtype=x.dtype).cuda()
+    random_tensor = keep_prob + torch.rand(shape, dtype=x.dtype)
     random_tensor = torch.floor(random_tensor)
     output = torch.div(x, keep_prob) * random_tensor
     return output
@@ -156,13 +157,13 @@ class Attention(nn.Module):
         if mixer == 'Local' and HW is not None:
             hk = local_k[0]
             wk = local_k[1]
-            mask = torch.ones([H * W, H + hk - 1, W + wk - 1], dtype=torch.float32).cuda()
+            mask = torch.ones([H * W, H + hk - 1, W + wk - 1], dtype=torch.float32)
             for h in range(0, H):
                 for w in range(0, W):
                     mask[h * W + w, h:h + hk, w:w + wk] = 0.
             mask_torch = torch.flatten(mask[:, hk // 2:H + hk // 2, wk // 2:W + wk //
                                2], 1)
-            mask_inf = torch.full([H * W, H * W], -np.inf, dtype=torch.float32).cuda()
+            mask_inf = torch.full([H * W, H * W], -np.inf, dtype=torch.float32)
             mask = torch.where(mask_torch < 1, mask_torch, mask_inf)
             self.mask = mask.unsqueeze(0)
             self.mask = self.mask.unsqueeze(0)
@@ -182,7 +183,7 @@ class Attention(nn.Module):
         q, k, v = qkv[0] * self.scale, qkv[1], qkv[2]
         attn = (q.matmul(k.permute(0, 1, 3, 2)))
         if self.mixer == 'Local':
-            attn += self.mask
+            attn += self.mask.to(torch.device(attn.device))
         attn = nn.functional.softmax(attn, dim=-1)
         attn = self.attn_drop(attn)
 
