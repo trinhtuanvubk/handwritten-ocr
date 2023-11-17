@@ -5,6 +5,7 @@
 *test*
 ckpt/SVTR*/
 Dataset
+CP
 data/*
 **/trash*.py
 .vscode/launch.json
