@@ -17,7 +17,7 @@ vi_dict = ['', 'a', 'A', 'à', 'À', 'ả', 'Ả', 'ã', 'Ã', 'á', 'Á', 'ạ'
 
 decoder = build_ctcdecoder(
     vi_dict,
-    kenlm_model_path='nnet/ngram/address_fix.arpa',  # either .arpa or .bin file
+    kenlm_model_path='ckpt/ngram/address_fix_811.bin',  # either .arpa or .bin file
     # kenlm_model_path=None,
     alpha=0.3,  # tuned on a val set
     beta=2.0,  # tuned on a val set
@@ -32,7 +32,7 @@ def check_num(word:str):
     return False
 
 def submission(args, use_lm=True):
-    with open('./811_Son_both.csv', 'a+') as f:
+    with open('./1611_0811.csv', 'a+') as f:
         writer = csv.writer(f,  delimiter=',')
         writer.writerow(["id", "answer"])
 
@@ -42,6 +42,7 @@ def submission(args, use_lm=True):
         model = model.to(args.device)
         # ckpt_path = "./ckpt/SVTR_kalapa2110/checkpoints/SVTR.ckpt"
         # ckpt_path = "./ckpt/SVTR_kalapa_611/checkpoints/SVTR.ckpt"
+        # ckpt_path = "./ckpt/SVTR_111123/SVTR_111123.ckpt"
         ckpt_path = "./ckpt/SVTR_711_Son/SVTR_0811_0.92.ckpt"
         checkpoint = torch.load(ckpt_path, map_location=args.device)
         model.load_state_dict(checkpoint['model_state_dict'])
@@ -137,9 +138,9 @@ def submission(args, use_lm=True):
                 batch_last_output = []
                 # do lm first
                 with multiprocessing.get_context("fork").Pool() as pool:
-                    batch_lm_output = decoder.decode_batch(pool, output.cpu().detach().numpy())
-                                                                    # beam_prune_logp=-15,
-                                                                    # token_min_logp=-7)
+                    batch_lm_output = decoder.decode_batch(pool, output.cpu().detach().numpy(),
+                                                                    beam_prune_logp=-15,
+                                                                    token_min_logp=-7)
                     # postprocessed_output = decoder.decode(output[0].cpu().detach().numpy())
                     batch_lm_output = [i.replace("  "," ").replace("uỵ", "ụy") for i in batch_lm_output]
 
@@ -150,8 +151,10 @@ def submission(args, use_lm=True):
                 # print(batch_nolm_output)
                 for lm_output, nolm_output in zip(batch_lm_output, batch_nolm_output):
 
-                    if len(lm_output.split(" ")) != len(nolm_output.split(" ")):
+                    if len(lm_output.split(" ")) > len(nolm_output.split(" ")):
                         last_output = lm_output
+                    elif len(lm_output.split(" ")) < len(nolm_output.split(" ")):
+                        last_output = nolm_output
                     else:
                         last_output = lm_output
                         for lm_word, nolm_word in zip(lm_output.split(" "), nolm_output.split(" ")):
