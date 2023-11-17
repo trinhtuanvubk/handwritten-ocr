@@ -3,7 +3,7 @@
 *.txt
 *.csv
 *test*
-ckpt
+ckpt/SVTR*/
 Dataset
 data/*
 **/trash*.py
@@ -13,6 +13,9 @@ test_shape.py
 /ctcdecode/
 /kenlm/
 ./Dataset
+nnet/ngram/
+**/*.onnx
+word_image
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
