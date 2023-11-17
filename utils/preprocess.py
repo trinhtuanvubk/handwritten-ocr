@@ -134,8 +134,8 @@ def detect_text_lines(img):
         left, top , right, bottom = box
 
         # You might want to adjust the threshold here
-        if (abs(left - current_line_right) <= 0.15 * W_img) and \
-            (bottom >= current_line_top):
+        if (abs(left - current_line_right) <= 0.15 * W_img):
+            # (bottom >= current_line_top):
             current_line.append(box)
         else:
             # In this kalapa challenge: just have only one sentence
@@ -200,6 +200,128 @@ def detect_text_lines(img):
     # return result_img
     return result_img
 
+def detect_text_lines_v2(img, num_words):
+
+    def top_k_nosort(arr, topk=10):
+        top_k_max_values = sorted(arr, reverse=True, key=lambda i: ((i[2]-i[0])*2+(i[3]-i[1])))[:topk]
+        result_list = [value for value in arr if value in top_k_max_values]
+        result_index = [i for i,value in enumerate(arr) if value in top_k_max_values]
+        return result_list, result_index
+
+    img_ori = img.copy()
+    img = increase_contrast_with_clahe(img)
+
+    # Remove lines from the image
+    img = remove_lines(img)
+
+    # Convert to grayscale
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+    # Removing Shadows
+    dilated_img = cv2.dilate(img, np.ones((7,7), np.uint8))
+    bg_img = cv2.medianBlur(dilated_img, 21)
+    diff_img = 255 - cv2.absdiff(img, bg_img)
+    img = diff_img
+
+    # Apply blur to smooth out the edges
+    img = cv2.GaussianBlur(img, (5, 5), 0)
+
+    # Apply threshold to get image with only b&w (binarization)
+    img = cv2.threshold(img, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
+
+    # Morphological operations to assist in isolating lines of text
+    kernel = np.ones((2, 2), np.uint8)
+    img = cv2.dilate(img, kernel, iterations=4)
+    img = cv2.erode(img, kernel, iterations=18)
+
+    # Find contours of potential text lines
+    contours, hierarchy = cv2.findContours(255 - img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    W_img = img.shape[1]
+    H_img = img.shape[0]
+
+    box_contour_list = []
+    # Filter and draw rectangles on potential text lines
+    for contour in contours:
+        # Get rectangle bounding contour
+        [x, y, w, h] = cv2.boundingRect(contour)
+
+        # Don't plot small false positives that aren't text
+        if h < 0.2 * H_img or w > 0.2 * W_img or w < 0.004 * W_img:
+            continue
+
+        box_contour_list.append([x, y, x + w, y + h])
+        # Draw rectangle around contour on original image
+        # cv2.rectangle(img_ori, (x, y), (x + w, y + h), (255, 0, 255), 2)
+
+    if len(box_contour_list)==0:
+        return None
+    
+    # Sort via width ==============
+    box_contour_list = sorted(box_contour_list, key=lambda box: box[0])   # sort top to botton
+
+    if len(box_contour_list)==num_words:
+        for box in box_contour_list:
+            cv2.rectangle(img_ori, (int(box[0]), 5), (int(box[2]), int(H_img-5)), (255, 0, 0), 2)
+        result_img = img_ori
+        return result_img
+    
+    if len(box_contour_list) < num_words:
+        return None
+
+
+    topk_contour, topk_index = top_k_nosort(box_contour_list, topk= num_words)
+
+    # max_width_ele = max([(box[3]-box[0]) for box in box_contour_list])
+    # top_num_word_box = sorted(box_contour_list, key=lambda box:((box[2]-box[0])+(box[3]-box[1])))[:num_words]
+    merge_box_lines = []
+    # current_line = [box_contour_list[0]]
+    curr_topk_idx = 0
+    for i, box in enumerate(box_contour_list):
+        # current_line_left, current_line_top, current_line_right, current_line_bottom = current_line[-1]
+        if i in topk_index:
+            if curr_topk_idx<len(topk_index)-1:
+                curr_topk_idx += 1
+            else:
+                continue
+        else:
+            left, top , right, bottom = box
+            print(curr_topk_idx)
+            curr_left, curr_top , curr_right, curr_bottom = topk_contour[curr_topk_idx]
+            last_curr_left, last_curr_top , last_curr_right, last_curr_bottom = topk_contour[curr_topk_idx-1]
+
+            if curr_topk_idx == 0:
+                topk_contour[curr_topk_idx][0] = min(left, curr_left)
+                topk_contour[curr_topk_idx][2] = max(right, curr_right)
+
+            elif curr_topk_idx == len(topk_contour):
+                topk_contour[curr_topk_idx][0] = min(left, curr_left)
+                topk_contour[curr_topk_idx][2] = max(right, curr_right)
+            else:
+                # front_dis =  abs((curr_left + (curr_right-curr_left)/2) - (left + (right-left)/2))
+                # back_dis =  abs((last_curr_left + (last_curr_right-last_curr_left)/2) - (left + (right-left)/2))
+                front_dis = curr_left - right
+                back_dis = left - last_curr_right
+                if front_dis<=back_dis:
+                    topk_contour[curr_topk_idx][0] = min(left, curr_left)
+                    topk_contour[curr_topk_idx][2] = max(right, curr_right)
+                else:
+                    topk_contour[curr_topk_idx-1][0] = min(left, last_curr_left)
+                    topk_contour[curr_topk_idx-1][2] = max(right, last_curr_right)
+
+    for i, box in enumerate(topk_contour):
+        if i==0:
+            box[0] = max(0, box[0] - box[0]/5*2)
+            box[2] = box[2] + (topk_contour[i+1][0] - box[2])/5*2
+        elif i==len(topk_contour)-1:
+            box[0] = box[0] - (box[0] - topk_contour[i-1][2])/5*2
+            box[2] = min(W_img, box[2] + (W_img - box[2])/5*2)
+        else:
+            box[0] = box[0] - (box[0] - topk_contour[i-1][2])/7*3
+            box[2] = box[2] + (topk_contour[i+1][0] - box[2])/5*2
+        cv2.rectangle(img_ori, (int(box[0]), 3), (int(box[2]), int(H_img-3)), (255, 0, 0), 2)
+
+    result_img = img_ori
+    return result_img
 
 
 # if __name__ == "__main__":
