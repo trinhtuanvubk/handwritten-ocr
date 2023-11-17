@@ -95,30 +95,30 @@ def create_lmdb_data(args):
         env.close()
     # my hard code
     else: 
-        # Đường dẫn đến folder chứa các file ảnh và folder label
-        # 40k 50k 60k 50k 100k 30k
-        train_paths = [
-            # {'image_folder': './data/pretrain/images_hw1',
-            # 'label_folder': './data/pretrain/labels_hw1'},
-            # {'image_folder': './data/pretrain/images_hw2',
-            # 'label_folder': './data/pretrain/labels_hw2'},
-            # {'image_folder': './data/pretrain/images_hw3',
-            # 'label_folder': './data/pretrain/labels_hw3'},
-            # {'image_folder': './data/pretrain/images_hw4',
-            # 'label_folder': './data/pretrain/labels_hw4'},
-            # {'image_folder': './data/pretrain/images_hw_normal',
-            # 'label_folder': './data/pretrain/labels_hw_normal'}
-            # {'image_folder': './data/kalapa_fix/train/images',
-            # 'label_folder': './data/kalapa_fix/train/labels'},
-            {'image_folder': './data/train_finetune_0311_v2_split_img/train/images',
-            'label_folder': './data/train_finetune_0311_v2_split_img/train/labels'},
-        ]
+        # # Đường dẫn đến folder chứa các file ảnh và folder label
+        # # 40k 50k 60k 50k 100k 30k
+        # train_paths = [
+        #     # {'image_folder': './data/pretrain/images_hw1',
+        #     # 'label_folder': './data/pretrain/labels_hw1'},
+        #     # {'image_folder': './data/pretrain/images_hw2',
+        #     # 'label_folder': './data/pretrain/labels_hw2'},
+        #     # {'image_folder': './data/pretrain/images_hw3',
+        #     # 'label_folder': './data/pretrain/labels_hw3'},
+        #     # {'image_folder': './data/pretrain/images_hw4',
+        #     # 'label_folder': './data/pretrain/labels_hw4'},
+        #     # {'image_folder': './data/pretrain/images_hw_normal',
+        #     # 'label_folder': './data/pretrain/labels_hw_normal'}
+        #     # {'image_folder': './data/kalapa_fix/train/images',
+        #     # 'label_folder': './data/kalapa_fix/train/labels'},
+        #     {'image_folder': './data/train_finetune_0311_v2_split_img/train/images',
+        #     'label_folder': './data/train_finetune_0311_v2_split_img/train/labels'},
+        # ]
 
-        val_paths = [
-            {'image_folder': './data/train_finetune_0311_v2_split_img/val/images',
-            'label_folder': './data/train_finetune_0311_v2_split_img/val/labels'}]
+        # val_paths = [
+        #     {'image_folder': './data/train_finetune_0311_v2_split_img/val/images',
+        #     'label_folder': './data/train_finetune_0311_v2_split_img/val/labels'}]
         # paths = train_paths
-        paths = val_paths
+        # paths = val_paths
         # Đường dẫn đến file LMDB sẽ được tạo
         # lmdb_path = "./ocr_reg_lmdb/train/"
         train_data_path = os.path.join(args.raw_data_path, "train")

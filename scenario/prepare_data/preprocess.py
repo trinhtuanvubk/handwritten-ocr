@@ -5,7 +5,7 @@ from tqdm import tqdm
 
 def crop_data(args):
     # this code is used for data_mode: 2
-    new_data_path = f"{args.raw_data_path}_crop"
+    new_data_path = f"{args.raw_data_path}_crop_raw"
     os.makedirs(new_data_path, exist_ok=True)
     if args.raw_data_type not in [0,1]:
         try:
