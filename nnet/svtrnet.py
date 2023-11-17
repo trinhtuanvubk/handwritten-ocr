@@ -20,9 +20,9 @@ def drop_path(x, drop_prob=0., training=False):
     if drop_prob == 0. or not training:
         return x
 
-    keep_prob = torch.tensor(1-drop_prob, dtype=x.dtype)
+    keep_prob = torch.tensor(1-drop_prob, dtype=x.dtype, device=x.device)
     shape = (x.size()[0], ) + (1, ) * (x.ndim - 1)
-    random_tensor = keep_prob + torch.rand(shape, dtype=x.dtype)
+    random_tensor = keep_prob + torch.rand(shape, dtype=x.dtype, device=x.device)
     random_tensor = torch.floor(random_tensor)
     output = torch.div(x, keep_prob) * random_tensor
     return output
@@ -381,9 +381,12 @@ class SVTRNet(nn.Module):
             embed_dim=[64, 128, 256],
             depth=[3, 6, 3],
             num_heads=[2, 4, 8],
+            # My fixing at mixer
             mixer=['Local'] * 6 + ['Global'] *
             6,  # Local atten, Global atten, Conv
             local_mixer=[[7, 11], [7, 11], [7, 11]],
+            # mixer=['Conv','Conv','Conv','Conv','Conv','Conv','Global','Global','Global','Global','Global','Global'],
+            # local_mixer=[[5, 5], [5, 5], [5, 5]],
             patch_merging='Conv',  # Conv, Pool, None
             mlp_ratio=4,
             qkv_bias=True,
