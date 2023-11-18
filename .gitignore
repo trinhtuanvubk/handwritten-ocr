@@ -1,12 +1,24 @@
 # 
-ckpt
-data/*
+*.jpg
+*.zip
+*.csv
+*test*
+ckpt/SVTR*/
+Dataset
+CP
+data/kala*
+data/pre*
+!data/address_corpus/*
 **/trash*.py
 .vscode/launch.json
 test_shape.py
 **/*gram*.bin
 /ctcdecode/
 /kenlm/
+./Dataset
+nnet/ngram/
+**/*.onnx
+word_image
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
