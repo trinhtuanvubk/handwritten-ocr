@@ -9,6 +9,31 @@ pip install -r requiments.txt
 ```
 
 ### Data
+- Note: data format should be in 2 type (a folder contains all images and a folder contains all label text files)
+```
+|___data
+|    |___train
+|    |    |___images
+|    |    |    |___0.jpg
+|    |    |    |___...
+|    |    |___labels
+|    |    |    |___0.txt
+|    |    |    |___...
+|    |___val
+|    |    |___images
+|    |    |      |___0.jpg
+|    |    |      |___...
+|    |    |___labels
+|    |    |      |___0.txt
+|    |    |      |___...
+```
+
+- To preprocess (crop image):
+```bash
+python3 main.py --scenario preprocess \
+--raw_data_path "./data/OCR/training_data"
+```
+
 - To create lmdb data from raw data:
 ```bash
 python3 main.py --scenario create_lmdb_data \
@@ -43,25 +68,38 @@ python3 main.py --scenario train \
 ### Inference
 - To run inference test:
 ```bash
-python3 main.py --scenario infer --image_test_path "/home/sangdt/research/voice/svtr-pytorch/data/OCR/public_test/images/14/0.jpg"
+python3 main.py --scenario infer --image_test_path "path/to/image.jpg"
+```
+
+### Export Onxx
+- To export model to onnx (optional):
+```
+python3 export_onnx.py
 ```
 
 ### Submission
-
-```bash
-python3 submission.py
-```
+- To run infer with a folder:
+    - run in batch:
+        ```bash
+        python3 submission.py
+        ```
+    - run each image:
+        ```bash
+        python3 torch_submission.py
+        ```
+    - run each image with onnx:
+        ```bash
+        python3 onnx_submission.py```
 
 ### Todo
-- `scenario`: - prepare_data: convert image to GRAY by opencv
-
-- `nnet`: find the way to remove hard code: input shape and output max length
-- Merge config from `dataloader/config.yaml` and `utils/args.py`
+- [ ] Implement SAR loss that helps training model with multiple loss
+- [ ] `nnet`: find the way to remove hard code: input shape and output max length
+- [ ] Merge config from `dataloader/config.yaml` and `utils/args.py`
 
 ### Note
 - See `dataloader/config.yaml` to config augmentation, normalization and preprocessing. 
 - See `utils/args.py` to modify some config
 - Some hard code at set max text length to the last layer in  `nnet/modules/rec_head`
 - Hard code at `T_max` in cosine lr schedualer
-- https://github.com/kmario23/KenLM-training
-- comment warning in `python3.10/site-packages/pyctcdecode/alphabet.py`
+- To build ngram model: https://github.com/kmario23/KenLM-training
+- I had a mistake when building dictionary that duplicates 2 symbols. I dont have the resource to retrain model, so comment warning in `python3.10/site-packages/pyctcdecode/alphabet.py` to pass the duplicate check.
