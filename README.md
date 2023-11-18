@@ -90,7 +90,8 @@ python3 export_onnx.py
         ```
     - run each image with onnx:
         ```bash
-        python3 onnx_submission.py```
+        python3 onnx_submission.py
+        ```
 
 ### Todo
 - [ ] Implement SAR loss that helps training model with multiple loss
