@@ -1,4 +1,4 @@
-# Vietnamese Handwritten OCR
+# Vietnamese Handwritten OCR (Top 5 Kalapa Challenge 2023)
 - In this project, we implement a lightweight model `SVTR` in pytorch for handwritten-ocr task. In terms of steps, we trained a pretrained model with a large of generated data. Then, we fintuned model with real handwritten data.
 ### Environment
 
