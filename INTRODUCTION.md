@@ -4,11 +4,11 @@
 - Problem: Building a lightweight model that can be used in mobile for Vietnamese Handwritten OCR in the domain of Vietnam address
 
 - Input: Raw image with one line text
-![hihi](/examples/finetuned_fixed_aug/images/7_6.jpg)
-![hihi](/examples/finetuned_fixed_aug/images/10_22.jpg)
-![hihi](/examples/finetuned_fixed_aug/images/10_6.jpg)
-![hihi](/examples/finetuned_fixed_aug/images/69_8.jpg)
-![hihi](/examples/finetuned_fixed_aug/images/73_1.jpg)
+![hihi](/examples/finetuned_fixed_aug/images/7_6.jpg)  
+![hihi](/examples/finetuned_fixed_aug/images/10_22.jpg)  
+![hihi](/examples/finetuned_fixed_aug/images/10_6.jpg)  
+![hihi](/examples/finetuned_fixed_aug/images/69_8.jpg)  
+![hihi](/examples/finetuned_fixed_aug/images/73_1.jpg)  
 
 - Output: the text in input image
 
@@ -61,11 +61,11 @@
 - To generate data, use some handwritten fonts and the text corpus to generate with my repo [OCR-Handwritten-Text-Generator](https://github.com/trinhtuanvubk/handwriten-ocr-kalapa2023)
 
 
-![hihi](examples/pretrain/image-000000001.jpg)
-![hihi](examples/pretrain/image-000000005.jpg)
-![hihi](examples/pretrain/image-000000033.jpg)
-![hihi](examples/pretrain/image-000000102.jpg)
-![hihi](examples/pretrain/image-000000171.jpg)
+![hihi](examples/pretrain/image-000000001.jpg)  
+![hihi](examples/pretrain/image-000000005.jpg)  
+![hihi](examples/pretrain/image-000000033.jpg)  
+![hihi](examples/pretrain/image-000000102.jpg)  
+![hihi](examples/pretrain/image-000000171.jpg)  
 
 - Then, apply some augmentation in above repository
 
@@ -81,10 +81,10 @@ python3 main.py --scenario preprocess \
 --raw_data_path "./path/to/raw/data/"
 ```
 
-![hihi](/examples/finetuned_fixed_aug_crop_raw/images/7_6_crop.jpg)
-![hihi](/examples/finetuned_fixed_aug_crop_raw/images/10_22_crop.jpg)
-![hihi](/examples/finetuned_fixed_aug_crop_raw/images/10_6_crop.jpg)
-![hihi](/examples/finetuned_fixed_aug_crop_raw/images/69_8_crop.jpg)
+![hihi](/examples/finetuned_fixed_aug_crop_raw/images/7_6_crop.jpg)  
+![hihi](/examples/finetuned_fixed_aug_crop_raw/images/10_22_crop.jpg)  
+![hihi](/examples/finetuned_fixed_aug_crop_raw/images/10_6_crop.jpg)  
+![hihi](/examples/finetuned_fixed_aug_crop_raw/images/69_8_crop.jpg)  
 
 - Then, create lmdb data from raw data:
 ```bash
