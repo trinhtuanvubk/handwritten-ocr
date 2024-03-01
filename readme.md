@@ -1,7 +1,7 @@
 # Vietnamese Handwritten OCR (Top5 Kalapa Challenge 2023)
 
 ### Problem Statements
-- Problem: Building a lightweight model that can be used in mobile for Vietnamese Handwritten OCR in the domain of Vietnam address
+- Problem: Building a lightweight model suitable for mobile devices to perform Vietnamese Handwritten OCR in the context of Vietnamese addresses
 
 - Input: Raw image with one line text
 ![hihi](/examples/finetuned_fixed_aug/images/7_6.jpg)  
@@ -10,7 +10,7 @@
 ![hihi](/examples/finetuned_fixed_aug/images/69_8.jpg)  
 ![hihi](/examples/finetuned_fixed_aug/images/73_1.jpg)  
 
-- Output: the text in input image
+- Output: the text in the input image
 
 - Metric: the custom of edit distance between output with lable
 
@@ -20,12 +20,12 @@
     - No pretrained model for OCR task or handwritten dataset
 
 - Some issues with data: 
-    - white part at the end of the image
-    - short text without linguistic 
-    - many colors
-    - 2 lines 
-    - not show fully text
-    - empty images
+    - White space at the end of the image.
+    - Short text lacking linguistic context.
+    - Excessive use of colors.
+    - Two lines of text.
+    - Text not fully visible.
+    - Empty images.
 
 - Ideas:
     - Choose a very lightweight OCR model: SVTR
@@ -54,9 +54,9 @@
 
 ###### Pretrained
 - Collect address text:
-    - excel file from gov
-    - text label from other ocr dataset
-    - crawl villages in google
+    - Extract data from an Excel file provided by the government.
+    - Get text label from other OCR datasets
+    - Crawl information on villages from Google.
 
 - To generate data, use some handwritten fonts and the text corpus to generate with my repo [OCR-Handwritten-Text-Generator](https://github.com/trinhtuanvubk/handwriten-ocr-kalapa2023)
 
@@ -73,7 +73,7 @@
 
 ###### Finetuned
 
-- Manual check to crop 2 line image and fix the label
+- Manually check to crop 2 line image and correct the label
 
 - To crop image to remove the white part at the end, help handle the empty image
 ```bash
