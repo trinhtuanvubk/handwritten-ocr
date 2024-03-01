@@ -24,7 +24,7 @@ def crop_data(args):
                         image = cv2.imread(img_path)
                         image = detect_text_lines(image)
                         if image is None:
-                            print("FUCKING SHIT")
+                            print("None Image")
                             continue
                         new_img_path = os.path.join(new_fol_path, img)
                         print(new_img_path)
@@ -44,7 +44,7 @@ def crop_data(args):
                         image = cv2.imread(img_path)
                         image = detect_text_lines(image)
                         if image is None:
-                            print("FUCKING SHIT")
+                            print("None Image")
                             continue
                         new_img_path = os.path.join(new_fol_path, img)
                         print(new_img_path)
@@ -65,7 +65,7 @@ def crop_data(args):
                         image = cv2.imread(img_path)
                         image = detect_text_lines(image)
                         if image is None:
-                            print("FUCKING SHIT")
+                            print("None Image")
                             continue
                         new_img_path = os.path.join(new_fol_path, f"{image_name}_crop.jpg")
                         print(new_img_path)
